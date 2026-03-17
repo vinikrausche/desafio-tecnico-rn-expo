@@ -196,8 +196,3 @@ export const useStoreZustand = create<StoreZustandState>((set, get) => ({
     return updatedStore;
   },
 }));
-
-export function selectStoreById(storeId: string) {
-  return (state: StoreZustandState): StoreSummary | undefined =>
-    state.storesById[storeId];
-}

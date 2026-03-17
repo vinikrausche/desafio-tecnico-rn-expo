@@ -31,8 +31,3 @@ export async function startMockServer() {
 
   return globalThis.__mirageServer__;
 }
-
-export function stopMockServer() {
-  globalThis.__mirageServer__?.shutdown();
-  globalThis.__mirageServer__ = undefined;
-}
