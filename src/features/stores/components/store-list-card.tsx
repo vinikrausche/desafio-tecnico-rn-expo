@@ -2,21 +2,24 @@ import {
   Badge,
   BadgeText,
   Button,
-  ButtonText,
   Card,
+  EditIcon,
   Heading,
   HStack,
+  Icon,
+  SearchIcon,
   Text,
+  TrashIcon,
   VStack,
 } from '@gluestack-ui/themed';
 
 import type { StoreSummary } from '../store.types';
+import { corporateTheme } from '../../../theme/corporate-theme';
 import { storeListCardStyles as styles } from './store-list-card.styles';
 
 type StoreListCardProps = {
   onDelete: () => void;
   onEdit: () => void;
-  onLinkProduct: () => void;
   onOpenProducts: () => void;
   store: StoreSummary;
 };
@@ -29,7 +32,6 @@ function formatProductCount(value: number) {
 export function StoreListCard({
   onDelete,
   onEdit,
-  onLinkProduct,
   onOpenProducts,
   store,
 }: StoreListCardProps) {
@@ -52,20 +54,40 @@ export function StoreListCard({
         <Text style={styles.meta}>{formatProductCount(store.productCount)}</Text>
 
         <HStack style={styles.actionsGrid}>
-          <Button style={styles.primaryActionButton} onPress={onOpenProducts}>
-            <ButtonText style={styles.primaryActionButtonText}>Produtos</ButtonText>
+          <Button
+            accessibilityLabel={`Abrir produtos da loja ${store.name}`}
+            style={styles.iconActionButton}
+            onPress={onOpenProducts}
+          >
+            <Icon
+              as={SearchIcon}
+              color={corporateTheme.colors.brandStrong}
+              style={styles.iconAction}
+            />
           </Button>
 
-          <Button style={styles.secondaryActionButton} onPress={onLinkProduct}>
-            <ButtonText style={styles.secondaryActionButtonText}>Vincular</ButtonText>
+          <Button
+            accessibilityLabel={`Editar loja ${store.name}`}
+            style={styles.iconActionButton}
+            onPress={onEdit}
+          >
+            <Icon
+              as={EditIcon}
+              color={corporateTheme.colors.brandStrong}
+              style={styles.iconAction}
+            />
           </Button>
 
-          <Button style={styles.secondaryActionButton} onPress={onEdit}>
-            <ButtonText style={styles.secondaryActionButtonText}>Editar</ButtonText>
-          </Button>
-
-          <Button style={styles.dangerActionButton} onPress={onDelete}>
-            <ButtonText style={styles.dangerActionButtonText}>Excluir</ButtonText>
+          <Button
+            accessibilityLabel={`Excluir loja ${store.name}`}
+            style={styles.iconDangerActionButton}
+            onPress={onDelete}
+          >
+            <Icon
+              as={TrashIcon}
+              color={corporateTheme.colors.error}
+              style={styles.iconAction}
+            />
           </Button>
         </HStack>
       </VStack>

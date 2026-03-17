@@ -156,7 +156,6 @@ export default function StoresScreen() {
                   confirmDeleteStore(store.id, store.name);
                 }}
                 onEdit={() => router.push(`/stores/${store.id}/edit`)}
-                onLinkProduct={() => router.push(`/stores/${store.id}/products/new`)}
                 onOpenProducts={() => router.push(`/stores/${store.id}/products`)}
                 store={store}
               />
