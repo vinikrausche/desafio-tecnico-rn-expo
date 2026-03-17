@@ -5,11 +5,12 @@ import type {
 import {
   readMockDb,
   type MockDatabaseState,
-  writeMockDb,
   type ProductEntity,
+  writeMockDb,
 } from '../seeds/in-memory-db';
 import { generateModelId } from './model-id';
 
+// ! Helpers puros deixam a transformacao dos dados fora da API publica do model.
 function buildProductEntity(payload: CreateProductPayload): ProductEntity {
   return {
     ...payload,
@@ -43,7 +44,7 @@ function writeProducts(
   });
 }
 
-// ! Product persistence stays isolated here so routes and screens do not touch the raw db shape.
+// ! Este model concentra a persistencia de produtos e evita repeticao nas rotas.
 export const productModel = {
   create(payload: CreateProductPayload): ProductEntity {
     const snapshot = readMockDb();

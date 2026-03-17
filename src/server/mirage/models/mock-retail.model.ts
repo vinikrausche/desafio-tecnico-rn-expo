@@ -1,7 +1,7 @@
 import { productModel } from './product';
 import { storeModel } from './store';
 
-// ! This facade preserves the public Mirage API while each entity owns its own model file.
+// ! Esta fachada preserva a API publica do Mirage sem misturar regras de produto e loja.
 export const mockRetailModel = {
   createProduct: productModel.create,
   createStore: storeModel.create,

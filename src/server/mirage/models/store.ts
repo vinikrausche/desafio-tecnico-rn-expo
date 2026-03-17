@@ -5,12 +5,20 @@ import type {
 import {
   readMockDb,
   type MockDatabaseState,
-  writeMockDb,
   type ProductEntity,
   type StoreEntity,
   type StoreRecord,
+  writeMockDb,
 } from '../seeds/in-memory-db';
 import { generateModelId } from './model-id';
+
+// ! Helpers puros deixam a transformacao dos dados fora da API publica do model.
+function countProductsByStore(
+  products: ProductEntity[],
+  storeId: string,
+): number {
+  return products.filter((product) => product.storeId === storeId).length;
+}
 
 function buildStoreSummary(
   store: StoreRecord,
@@ -18,7 +26,7 @@ function buildStoreSummary(
 ): StoreEntity {
   return {
     ...store,
-    productCount: products.filter((product) => product.storeId === store.id).length,
+    productCount: countProductsByStore(products, store.id),
   };
 }
 
@@ -40,7 +48,9 @@ function replaceStore(
   stores: StoreRecord[],
   nextStore: StoreRecord,
 ): StoreRecord[] {
-  return stores.map((store) => (store.id === nextStore.id ? nextStore : store));
+  return stores.map((store) =>
+    store.id === nextStore.id ? nextStore : store,
+  );
 }
 
 function writeStores(
@@ -53,6 +63,7 @@ function writeStores(
   });
 }
 
+// ! Exclusao de loja precisa atualizar lojas e produtos juntos no banco em memoria.
 function writeStoreState(
   stores: StoreRecord[],
   products: ProductEntity[],
@@ -63,7 +74,7 @@ function writeStoreState(
   });
 }
 
-// ! Store persistence stays isolated here so list and mutation rules keep one source of truth.
+// ! Este model concentra a persistencia de lojas e evita repetição nas rotas.
 export const storeModel = {
   create(payload: CreateStorePayload): StoreEntity {
     const snapshot = readMockDb();
