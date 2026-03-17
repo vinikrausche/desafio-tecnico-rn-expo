@@ -32,11 +32,77 @@ const pillBase = {
 } as const;
 
 export const dashboardStyles = StyleSheet.create({
+  actionGrid: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    width: '100%',
+  },
+  actionTile: {
+    ...centeredButtonStyle,
+    aspectRatio: 1,
+    borderRadius: 20,
+    borderWidth: 1,
+    flexBasis: '47.8%',
+    flexGrow: 0,
+    maxWidth: '47.8%',
+    minWidth: 0,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+  },
+  actionTileContent: {
+    alignItems: 'center',
+    gap: 10,
+    justifyContent: 'center',
+  },
+  actionTileDisabled: {
+    opacity: 0.45,
+  },
+  actionTileIcon: {
+    height: 22,
+    width: 22,
+  },
+  actionTileIconWrap: {
+    alignItems: 'center',
+    borderRadius: 16,
+    height: 48,
+    justifyContent: 'center',
+    width: 48,
+  },
+  actionTileIconWrapDisabled: {
+    backgroundColor: '#EDF2F7',
+  },
+  actionTileIconWrapPrimary: {
+    backgroundColor: '#F4F7FA',
+  },
+  actionTileIconWrapSecondary: {
+    backgroundColor: '#F4F7FA',
+  },
+  actionTilePrimary: {
+    backgroundColor: corporateTheme.colors.surface,
+    borderColor: corporateTheme.colors.border,
+  },
+  actionTileSecondary: {
+    backgroundColor: corporateTheme.colors.surface,
+    borderColor: corporateTheme.colors.border,
+  },
+  actionTileText: {
+    includeFontPadding: false,
+    fontSize: 13,
+    fontWeight: '700',
+    lineHeight: 18,
+    textAlign: 'center',
+    width: '100%',
+  },
+  actionTileTextDisabled: {
+    color: corporateTheme.colors.textMuted,
+  },
+  actionTileTextDefault: {
+    color: corporateTheme.colors.textPrimary,
+  },
   actionsCard: {
     ...cardBase,
-  },
-  buttonList: {
-    gap: 12,
   },
   content: {
     gap: 18,
@@ -187,19 +253,6 @@ export const dashboardStyles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
   },
-  primaryButton: {
-    ...centeredButtonStyle,
-    alignSelf: 'stretch',
-    backgroundColor: corporateTheme.colors.brandStrong,
-    borderRadius: 18,
-    minHeight: 52,
-  },
-  primaryButtonText: {
-    ...centeredButtonTextStyle,
-    color: corporateTheme.colors.textInverse,
-    fontSize: 15,
-    fontWeight: '700',
-  },
   rankingCard: {
     ...cardBase,
   },
@@ -226,21 +279,6 @@ export const dashboardStyles = StyleSheet.create({
   sectionBadgeText: {
     color: corporateTheme.colors.brandStrong,
     fontSize: 12,
-    fontWeight: '700',
-  },
-  secondaryButton: {
-    ...centeredButtonStyle,
-    alignSelf: 'stretch',
-    backgroundColor: corporateTheme.colors.surface,
-    borderColor: corporateTheme.colors.borderStrong,
-    borderRadius: 18,
-    borderWidth: 1,
-    minHeight: 52,
-  },
-  secondaryButtonText: {
-    ...centeredButtonTextStyle,
-    color: corporateTheme.colors.brandStrong,
-    fontSize: 15,
     fontWeight: '700',
   },
   sectionContent: {

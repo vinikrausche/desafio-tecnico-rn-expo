@@ -1,11 +1,14 @@
 import {
+  AddIcon,
   Badge,
   BadgeText,
   Button,
-  ButtonText,
   Card,
+  EditIcon,
   Heading,
   HStack,
+  Icon,
+  SearchIcon,
   Spinner,
   Text,
   VStack,
@@ -14,6 +17,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
 import { ScreenShell } from '../src/components/layout/screen-shell';
+import { StorefrontIcon } from '../src/components/icons/storefront-icon';
 import { dashboardStyles as styles } from '../src/features/dashboard/dashboard.styles';
 import { getDashboardSnapshot } from '../src/features/dashboard/services/dashboard.service';
 import type { ProductSummary } from '../src/features/products/product.types';
@@ -94,6 +98,61 @@ export default function HomeScreen() {
   const spotlightStores = [...stores]
     .sort((left, right) => right.productCount - left.productCount)
     .slice(0, 3);
+  const canManageProducts = totalStores > 0;
+  const actionTiles = [
+    {
+      icon: StorefrontIcon,
+      isDisabled: false,
+      key: 'view-stores',
+      label: 'Ver lojas',
+      onPress: () => {
+        setLastVisitedModule('stores');
+        router.push('/stores');
+      },
+      variant: 'secondary' as const,
+    },
+    {
+      icon: AddIcon,
+      isDisabled: false,
+      key: 'create-store',
+      label: 'Nova loja',
+      onPress: () => {
+        setLastVisitedModule('stores');
+        router.push('/stores/new');
+      },
+      variant: 'primary' as const,
+    },
+    {
+      icon: SearchIcon,
+      isDisabled: !canManageProducts,
+      key: 'view-products',
+      label: 'Ver produtos',
+      onPress: () => {
+        if (!leadingStore) {
+          return;
+        }
+
+        setLastVisitedModule('products');
+        router.push(`/stores/${leadingStore.id}/products`);
+      },
+      variant: 'secondary' as const,
+    },
+    {
+      icon: EditIcon,
+      isDisabled: !canManageProducts,
+      key: 'create-product',
+      label: 'Novo produto',
+      onPress: () => {
+        if (!leadingStore) {
+          return;
+        }
+
+        setLastVisitedModule('products');
+        router.push(`/stores/${leadingStore.id}/products/new`);
+      },
+      variant: 'primary' as const,
+    },
+  ];
 
   return (
     <ScreenShell eyebrow="Início" title="Dashboard">
@@ -134,31 +193,54 @@ export default function HomeScreen() {
               Ações
             </Heading>
 
-            <VStack style={styles.buttonList}>
-              <Button
-                style={styles.primaryButton}
-                onPress={() => {
-                  setLastVisitedModule('stores');
-                  router.push('/stores');
-                }}
-              >
-                <ButtonText style={styles.primaryButtonText}>
-                  Ver todas as lojas
-                </ButtonText>
-              </Button>
+            <HStack style={styles.actionGrid}>
+              {actionTiles.map((action) => (
+                <Button
+                  key={action.key}
+                  isDisabled={action.isDisabled}
+                  onPress={action.onPress}
+                  style={[
+                    styles.actionTile,
+                    action.variant === 'primary'
+                      ? styles.actionTilePrimary
+                      : styles.actionTileSecondary,
+                    action.isDisabled ? styles.actionTileDisabled : null,
+                  ]}
+                >
+                  <VStack style={styles.actionTileContent}>
+                    <VStack
+                      style={[
+                        styles.actionTileIconWrap,
+                        action.variant === 'primary'
+                          ? styles.actionTileIconWrapPrimary
+                          : styles.actionTileIconWrapSecondary,
+                        action.isDisabled ? styles.actionTileIconWrapDisabled : null,
+                      ]}
+                    >
+                      <Icon
+                        as={action.icon}
+                        color={
+                          action.isDisabled
+                            ? corporateTheme.colors.textMuted
+                            : corporateTheme.colors.brandStrong
+                        }
+                        style={styles.actionTileIcon}
+                      />
+                    </VStack>
 
-              <Button
-                style={styles.secondaryButton}
-                onPress={() => {
-                  setLastVisitedModule('stores');
-                  router.push('/stores/new');
-                }}
-              >
-                <ButtonText style={styles.secondaryButtonText}>
-                  Cadastrar nova loja
-                </ButtonText>
-              </Button>
-            </VStack>
+                    <Text
+                      style={[
+                        styles.actionTileText,
+                        styles.actionTileTextDefault,
+                        action.isDisabled ? styles.actionTileTextDisabled : null,
+                      ]}
+                    >
+                      {action.label}
+                    </Text>
+                  </VStack>
+                </Button>
+              ))}
+            </HStack>
           </VStack>
         </Card>
 
@@ -197,9 +279,7 @@ export default function HomeScreen() {
                       router.push(`/stores/${leadingStore.id}/products`);
                     }}
                   >
-                    <ButtonText style={styles.ghostButtonText}>
-                      Abrir produtos
-                    </ButtonText>
+                    <Text style={styles.ghostButtonText}>Abrir produtos</Text>
                   </Button>
                 </HStack>
               </VStack>
@@ -237,7 +317,7 @@ export default function HomeScreen() {
                 </Text>
 
                 <Button style={styles.retryButton} onPress={() => void loadDashboard()}>
-                  <ButtonText style={styles.retryButtonText}>Tentar novamente</ButtonText>
+                  <Text style={styles.retryButtonText}>Tentar novamente</Text>
                 </Button>
               </VStack>
             ) : null}
