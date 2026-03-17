@@ -38,7 +38,9 @@ export function StoreForm({
   return (
     <Card style={styles.card}>
       <VStack style={styles.content}>
-        {errors.form ? <Text style={styles.formError}>{errors.form}</Text> : null}
+        {errors.form ? (
+          <Text style={styles.formError}>{errors.form}</Text>
+        ) : null}
 
         <VStack style={styles.field}>
           <Text style={styles.label}>Nome</Text>
@@ -51,7 +53,9 @@ export function StoreForm({
               value={formValues.name}
             />
           </Input>
-          {errors.name ? <Text style={styles.fieldError}>{errors.name}</Text> : null}
+          {errors.name ? (
+            <Text style={styles.fieldError}>{errors.name}</Text>
+          ) : null}
         </VStack>
 
         <VStack style={styles.field}>

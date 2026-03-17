@@ -32,7 +32,9 @@ export default function StoresScreen() {
   const storeIds = useStoreZustand((state) => state.storeIds);
   const storesById = useStoreZustand((state) => state.storesById);
   const status = useStoreZustand((state) => state.status);
-  const removeProductsByStore = useProductZustand((state) => state.removeProductsByStore);
+  const removeProductsByStore = useProductZustand(
+    (state) => state.removeProductsByStore,
+  );
   const setLastVisitedModule = useNavigationStore(
     (state) => state.setLastVisitedModule,
   );
@@ -63,7 +65,9 @@ export default function StoresScreen() {
       removeProductsByStore(storeId);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Nao foi possivel excluir a loja.';
+        error instanceof Error
+          ? error.message
+          : 'Nao foi possivel excluir a loja.';
 
       Alert.alert('Erro ao excluir', message);
     } finally {
@@ -106,7 +110,9 @@ export default function StoresScreen() {
           </Heading>
 
           <Badge style={styles.counterBadge}>
-            <BadgeText style={styles.counterBadgeText}>{stores.length} lojas</BadgeText>
+            <BadgeText style={styles.counterBadgeText}>
+              {stores.length} lojas
+            </BadgeText>
           </Badge>
         </HStack>
 
@@ -131,7 +137,9 @@ export default function StoresScreen() {
                 style={styles.retryButton}
                 onPress={() => void loadStores({ force: true })}
               >
-                <ButtonText style={styles.retryButtonText}>Tentar novamente</ButtonText>
+                <ButtonText style={styles.retryButtonText}>
+                  Tentar novamente
+                </ButtonText>
               </Button>
             </VStack>
           </Card>
@@ -156,7 +164,9 @@ export default function StoresScreen() {
                   confirmDeleteStore(store.id, store.name);
                 }}
                 onEdit={() => router.push(`/stores/${store.id}/edit`)}
-                onOpenProducts={() => router.push(`/stores/${store.id}/products`)}
+                onOpenProducts={() =>
+                  router.push(`/stores/${store.id}/products`)
+                }
                 store={store}
               />
             ))}

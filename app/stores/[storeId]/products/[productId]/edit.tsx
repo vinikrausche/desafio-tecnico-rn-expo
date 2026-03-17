@@ -1,4 +1,11 @@
-import { Button, ButtonText, Card, Spinner, Text, VStack } from '@gluestack-ui/themed';
+import {
+  Button,
+  ButtonText,
+  Card,
+  Spinner,
+  Text,
+  VStack,
+} from '@gluestack-ui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
@@ -10,7 +17,10 @@ import { useNavigationStore } from '../../../../../src/store/navigation.store';
 import { useProductZustand } from '../../../../../src/zustand/product';
 import { corporateTheme } from '../../../../../src/theme/corporate-theme';
 
-function resolveParam(param: string | string[] | undefined, fallback: string): string {
+function resolveParam(
+  param: string | string[] | undefined,
+  fallback: string,
+): string {
   if (Array.isArray(param)) {
     return param[0] ?? fallback;
   }
@@ -34,7 +44,9 @@ export default function EditProductScreen() {
   const currentProduct = useProductZustand(
     (state) => state.productsById[resolvedProductId],
   );
-  const loadProductsByStore = useProductZustand((state) => state.loadProductsByStore);
+  const loadProductsByStore = useProductZustand(
+    (state) => state.loadProductsByStore,
+  );
   const productErrorMessage = useProductZustand(
     (state) => state.storeErrorMessageById[resolvedStoreId] ?? null,
   );
@@ -93,7 +105,9 @@ export default function EditProductScreen() {
       router.replace(`/stores/${resolvedStoreId}/products`);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Nao foi possivel atualizar o produto.';
+        error instanceof Error
+          ? error.message
+          : 'Nao foi possivel atualizar o produto.';
 
       setFormError(message);
     } finally {
@@ -102,7 +116,8 @@ export default function EditProductScreen() {
   }
 
   const isLoadingProduct =
-    (productStatus === 'idle' || productStatus === 'loading') && !currentProduct;
+    (productStatus === 'idle' || productStatus === 'loading') &&
+    !currentProduct;
   const hasProductLoadError = productStatus === 'error' && !currentProduct;
   const isProductMissing = productStatus === 'ready' && !currentProduct;
 
@@ -127,9 +142,13 @@ export default function EditProductScreen() {
 
               <Button
                 style={styles.primaryButton}
-                onPress={() => void loadProductsByStore(resolvedStoreId, { force: true })}
+                onPress={() =>
+                  void loadProductsByStore(resolvedStoreId, { force: true })
+                }
               >
-                <ButtonText style={styles.primaryButtonText}>Tentar novamente</ButtonText>
+                <ButtonText style={styles.primaryButtonText}>
+                  Tentar novamente
+                </ButtonText>
               </Button>
             </VStack>
           </Card>
@@ -142,7 +161,9 @@ export default function EditProductScreen() {
 
               <Button
                 style={styles.secondaryButton}
-                onPress={() => router.replace(`/stores/${resolvedStoreId}/products`)}
+                onPress={() =>
+                  router.replace(`/stores/${resolvedStoreId}/products`)
+                }
               >
                 <ButtonText style={styles.secondaryButtonText}>
                   Voltar para produtos

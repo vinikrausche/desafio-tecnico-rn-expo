@@ -26,6 +26,7 @@ Aplicativo mobile desenvolvido em React Native com Expo para centralizar o cadas
 - Navegação com Expo Router
 - Interface construída com Gluestack UI e tema visual corporativo
 - Suíte inicial de testes unitários com Jest
+- ESLint + Prettier configurados para manter padrão de código
 - Pipeline de CI com GitHub Actions para validar tipos, testes e build web em pull requests
 
 ## Fluxo de dados
@@ -66,6 +67,15 @@ npm run web
 ```bash
 npm run test
 npm run test:ci
+```
+
+## Qualidade de codigo
+
+```bash
+npm run lint
+npm run lint:fix
+npm run format
+npm run format:check
 ```
 
 ## Mock de back-end
@@ -142,11 +152,13 @@ npm run build:web
 
 ## CI
 
-O projeto possui uma workflow em `.github/workflows/ci.yaml` com execução em `pull_request`.
+O projeto possui uma workflow em `.github/workflows/ci.yaml` com execução em `push` na `main` e em `pull_request`.
 
 Validações da pipeline:
 
 - `npm ci`
+- `npm run lint`
+- `npm run format:check`
 - `npm run typecheck`
 - `npm run test:ci`
 - `npm run build:web`
@@ -158,5 +170,4 @@ Os itens abaixo podem ser adicionados depois, mas não são necessários para ex
 - busca e filtro de lojas e produtos
 - testes de interface com Testing Library React Native
 - persistência offline com AsyncStorage
-- lint e formatter
 - prints e link de publicação com Expo

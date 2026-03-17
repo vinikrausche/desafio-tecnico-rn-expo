@@ -41,7 +41,10 @@ export default function RootLayout() {
           name="stores/[storeId]/products/[productId]/edit"
           options={{ title: 'Editar Produto' }}
         />
-        <Stack.Screen name="+not-found" options={{ title: 'Rota não encontrada' }} />
+        <Stack.Screen
+          name="+not-found"
+          options={{ title: 'Rota não encontrada' }}
+        />
       </Stack>
     </AppProvider>
   );

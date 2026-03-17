@@ -1,7 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 import { centeredButtonStyle } from '../../../theme/button-presets';
-import { corporateShadows, corporateTheme } from '../../../theme/corporate-theme';
+import {
+  corporateShadows,
+  corporateTheme,
+} from '../../../theme/corporate-theme';
 
 export const storeListCardStyles = StyleSheet.create({
   address: {

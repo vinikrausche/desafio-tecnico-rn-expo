@@ -1,5 +1,11 @@
 import { gluestackUIConfig } from '@gluestack-ui/config';
-import { Box, GluestackUIProvider, Spinner, Text, VStack } from '@gluestack-ui/themed';
+import {
+  Box,
+  GluestackUIProvider,
+  Spinner,
+  Text,
+  VStack,
+} from '@gluestack-ui/themed';
 import { StatusBar } from 'expo-status-bar';
 import { type PropsWithChildren, useEffect, useRef } from 'react';
 import { StyleSheet } from 'react-native';
@@ -24,7 +30,7 @@ function BootstrapFallback({
 }) {
   const helperText =
     status === 'error'
-      ? errorMessage ?? 'Falha ao inicializar a base do aplicativo.'
+      ? (errorMessage ?? 'Falha ao inicializar a base do aplicativo.')
       : 'Carregando providers, navegação e mock API local.';
 
   return (
@@ -34,7 +40,9 @@ function BootstrapFallback({
           <VStack style={styles.fallbackContent}>
             <Spinner size="large" color="$emerald600" />
             <Text style={styles.fallbackTitle}>
-              {status === 'error' ? 'Inicialização interrompida' : 'Preparando o app'}
+              {status === 'error'
+                ? 'Inicialização interrompida'
+                : 'Preparando o app'}
             </Text>
             <Text style={styles.fallbackText}>{helperText}</Text>
           </VStack>

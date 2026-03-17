@@ -4,7 +4,10 @@ import {
   centeredButtonStyle,
   centeredButtonTextStyle,
 } from '../../../theme/button-presets';
-import { corporateShadows, corporateTheme } from '../../../theme/corporate-theme';
+import {
+  corporateShadows,
+  corporateTheme,
+} from '../../../theme/corporate-theme';
 
 export const productListCardStyles = StyleSheet.create({
   actionsRow: {

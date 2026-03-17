@@ -27,7 +27,11 @@ type ProductListCardProps = {
 };
 
 // ! O card de produto deixa as acoes do item visiveis sem sair da lista.
-export function ProductListCard({ onDelete, onEdit, product }: ProductListCardProps) {
+export function ProductListCard({
+  onDelete,
+  onEdit,
+  product,
+}: ProductListCardProps) {
   return (
     <Card style={styles.card}>
       <VStack style={styles.content}>
@@ -49,11 +53,15 @@ export function ProductListCard({ onDelete, onEdit, product }: ProductListCardPr
 
         <HStack style={styles.actionsRow}>
           <Button style={styles.secondaryActionButton} onPress={onEdit}>
-            <ButtonText style={styles.secondaryActionButtonText}>Editar</ButtonText>
+            <ButtonText style={styles.secondaryActionButtonText}>
+              Editar
+            </ButtonText>
           </Button>
 
           <Button style={styles.dangerActionButton} onPress={onDelete}>
-            <ButtonText style={styles.dangerActionButtonText}>Excluir</ButtonText>
+            <ButtonText style={styles.dangerActionButtonText}>
+              Excluir
+            </ButtonText>
           </Button>
         </HStack>
       </VStack>

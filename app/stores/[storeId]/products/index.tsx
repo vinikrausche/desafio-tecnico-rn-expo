@@ -38,7 +38,9 @@ export default function ProductsScreen() {
   const { storeId } = useLocalSearchParams<{ storeId?: string | string[] }>();
   const resolvedStoreId = resolveParam(storeId);
   const deleteProduct = useProductZustand((state) => state.deleteProduct);
-  const loadProductsByStore = useProductZustand((state) => state.loadProductsByStore);
+  const loadProductsByStore = useProductZustand(
+    (state) => state.loadProductsByStore,
+  );
   const productIdsByStore = useProductZustand(
     (state) => state.productIdsByStore[resolvedStoreId],
   );
@@ -65,11 +67,14 @@ export default function ProductsScreen() {
     () =>
       scopedProductIds
         .map((productId) => productsById[productId])
-        .filter((product): product is NonNullable<typeof product> => Boolean(product)),
+        .filter((product): product is NonNullable<typeof product> =>
+          Boolean(product),
+        ),
     [productsById, scopedProductIds],
   );
   const hasProductLoadError = productStatus === 'error';
-  const isLoadingProducts = productStatus === 'idle' || productStatus === 'loading';
+  const isLoadingProducts =
+    productStatus === 'idle' || productStatus === 'loading';
 
   async function handleDeleteProduct(productId: string) {
     try {
@@ -77,7 +82,9 @@ export default function ProductsScreen() {
       await deleteProduct(productId, resolvedStoreId);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Nao foi possivel excluir o produto.';
+        error instanceof Error
+          ? error.message
+          : 'Nao foi possivel excluir o produto.';
 
       Alert.alert('Erro ao excluir', message);
     } finally {
@@ -86,16 +93,20 @@ export default function ProductsScreen() {
   }
 
   function confirmDeleteProduct(productId: string, productName: string) {
-    Alert.alert('Excluir produto', `Deseja excluir o produto "${productName}"?`, [
-      { style: 'cancel', text: 'Cancelar' },
-      {
-        style: 'destructive',
-        text: 'Excluir',
-        onPress: () => {
-          void handleDeleteProduct(productId);
+    Alert.alert(
+      'Excluir produto',
+      `Deseja excluir o produto "${productName}"?`,
+      [
+        { style: 'cancel', text: 'Cancelar' },
+        {
+          style: 'destructive',
+          text: 'Excluir',
+          onPress: () => {
+            void handleDeleteProduct(productId);
+          },
         },
-      },
-    ]);
+      ],
+    );
   }
 
   return (
@@ -136,14 +147,19 @@ export default function ProductsScreen() {
             <VStack style={styles.content}>
               <Text style={styles.errorTitle}>Falha ao carregar</Text>
               <Text style={styles.errorText}>
-                {productErrorMessage ?? 'Não foi possível carregar os produtos.'}
+                {productErrorMessage ??
+                  'Não foi possível carregar os produtos.'}
               </Text>
 
               <Button
                 style={styles.retryButton}
-                onPress={() => void loadProductsByStore(resolvedStoreId, { force: true })}
+                onPress={() =>
+                  void loadProductsByStore(resolvedStoreId, { force: true })
+                }
               >
-                <ButtonText style={styles.retryButtonText}>Tentar novamente</ButtonText>
+                <ButtonText style={styles.retryButtonText}>
+                  Tentar novamente
+                </ButtonText>
               </Button>
             </VStack>
           </Card>
@@ -168,7 +184,9 @@ export default function ProductsScreen() {
                   confirmDeleteProduct(product.id, product.name);
                 }}
                 onEdit={() =>
-                  router.push(`/stores/${resolvedStoreId}/products/${product.id}/edit`)
+                  router.push(
+                    `/stores/${resolvedStoreId}/products/${product.id}/edit`,
+                  )
                 }
                 product={product}
               />

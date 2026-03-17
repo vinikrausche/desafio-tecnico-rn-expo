@@ -33,7 +33,10 @@ type ProductZustandState = {
   createProduct: (payload: CreateProductInput) => Promise<ProductSummary>;
   deleteProduct: (productId: string, storeId: string) => Promise<void>;
   loadCatalog: (options?: LoadOptions) => Promise<ProductSummary[]>;
-  loadProductsByStore: (storeId: string, options?: LoadOptions) => Promise<ProductSummary[]>;
+  loadProductsByStore: (
+    storeId: string,
+    options?: LoadOptions,
+  ) => Promise<ProductSummary[]>;
   removeProductsByStore: (storeId: string) => void;
   updateProduct: (
     productId: string,
@@ -116,7 +119,9 @@ function removeProductFromState(
   const currentStoreProductIds = state.productIdsByStore[storeId] ?? [];
 
   return {
-    productIds: state.productIds.filter((currentProductId) => currentProductId !== productId),
+    productIds: state.productIds.filter(
+      (currentProductId) => currentProductId !== productId,
+    ),
     productIdsByStore: {
       ...state.productIdsByStore,
       [storeId]: currentStoreProductIds.filter(

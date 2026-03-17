@@ -1,4 +1,11 @@
-import { Button, ButtonText, Card, Spinner, Text, VStack } from '@gluestack-ui/themed';
+import {
+  Button,
+  ButtonText,
+  Card,
+  Spinner,
+  Text,
+  VStack,
+} from '@gluestack-ui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
@@ -72,7 +79,9 @@ export default function EditStoreScreen() {
       router.replace('/stores');
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Nao foi possivel atualizar a loja.';
+        error instanceof Error
+          ? error.message
+          : 'Nao foi possivel atualizar a loja.';
 
       setFormError(message);
     } finally {
@@ -80,7 +89,8 @@ export default function EditStoreScreen() {
     }
   }
 
-  const isLoadingStore = (storesStatus === 'idle' || storesStatus === 'loading') && !store;
+  const isLoadingStore =
+    (storesStatus === 'idle' || storesStatus === 'loading') && !store;
   const hasStoreLoadError = storesStatus === 'error' && !store;
   const isStoreMissing = storesStatus === 'ready' && !store;
 
@@ -107,7 +117,9 @@ export default function EditStoreScreen() {
                 style={styles.primaryButton}
                 onPress={() => void loadStores({ force: true })}
               >
-                <ButtonText style={styles.primaryButtonText}>Tentar novamente</ButtonText>
+                <ButtonText style={styles.primaryButtonText}>
+                  Tentar novamente
+                </ButtonText>
               </Button>
             </VStack>
           </Card>
@@ -118,8 +130,13 @@ export default function EditStoreScreen() {
             <VStack style={styles.emptyStateContent}>
               <Text style={styles.emptyStateText}>Loja nao encontrada.</Text>
 
-              <Button style={styles.secondaryButton} onPress={() => router.replace('/stores')}>
-                <ButtonText style={styles.secondaryButtonText}>Voltar para lojas</ButtonText>
+              <Button
+                style={styles.secondaryButton}
+                onPress={() => router.replace('/stores')}
+              >
+                <ButtonText style={styles.secondaryButtonText}>
+                  Voltar para lojas
+                </ButtonText>
               </Button>
             </VStack>
           </Card>

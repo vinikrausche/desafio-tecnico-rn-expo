@@ -20,7 +20,9 @@ export class ApiError extends Error {
   }
 }
 
-async function readApiErrorPayload(response: Response): Promise<ApiErrorPayload | null> {
+async function readApiErrorPayload(
+  response: Response,
+): Promise<ApiErrorPayload | null> {
   try {
     return (await response.json()) as ApiErrorPayload;
   } catch {

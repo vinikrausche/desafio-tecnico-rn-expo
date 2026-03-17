@@ -35,7 +35,9 @@ export default function NewStoreScreen() {
       router.replace('/stores');
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Nao foi possivel salvar a loja.';
+        error instanceof Error
+          ? error.message
+          : 'Nao foi possivel salvar a loja.';
 
       setFormError(message);
     } finally {

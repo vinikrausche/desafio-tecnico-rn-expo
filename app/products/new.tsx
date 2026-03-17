@@ -30,8 +30,14 @@ export default function NewProductScreen() {
   const setLastVisitedModule = useNavigationStore(
     (state) => state.setLastVisitedModule,
   );
-  const { errors, formValues, getPayload, setFormError, syncStoreId, updateField } =
-    useCreateProductForm();
+  const {
+    errors,
+    formValues,
+    getPayload,
+    setFormError,
+    syncStoreId,
+    updateField,
+  } = useCreateProductForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -68,7 +74,9 @@ export default function NewProductScreen() {
       router.replace('/products');
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Nao foi possivel salvar o produto.';
+        error instanceof Error
+          ? error.message
+          : 'Nao foi possivel salvar o produto.';
 
       setFormError(message);
     } finally {
@@ -103,7 +111,9 @@ export default function NewProductScreen() {
                 style={styles.primaryButton}
                 onPress={() => void loadStores({ force: true })}
               >
-                <ButtonText style={styles.primaryButtonText}>Tentar novamente</ButtonText>
+                <ButtonText style={styles.primaryButtonText}>
+                  Tentar novamente
+                </ButtonText>
               </Button>
 
               {storesErrorMessage ? (

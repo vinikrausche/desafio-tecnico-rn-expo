@@ -37,6 +37,12 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Validar lint
+        run: npm run lint
+
+      - name: Validar formatacao
+        run: npm run format:check
+
       - name: Validar tipos
         run: npm run typecheck
 

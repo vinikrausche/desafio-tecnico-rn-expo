@@ -72,7 +72,9 @@ export function buildStoreInput(
   };
 }
 
-export function buildUpdateStoreInput(values: StoreFormValues): BuildStoreInputResult {
+export function buildUpdateStoreInput(
+  values: StoreFormValues,
+): BuildStoreInputResult {
   return buildStoreInput(values) as
     | {
         data: UpdateStoreInput;

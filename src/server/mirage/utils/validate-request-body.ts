@@ -17,9 +17,7 @@ export function validateRequestBody<T>(
   request: Request,
   schema: ZodType<T>,
   invalidPayloadMessage: string,
-):
-  | RequestBodyValidationFailure
-  | RequestBodyValidationSuccess<T> {
+): RequestBodyValidationFailure | RequestBodyValidationSuccess<T> {
   if (!request.requestBody) {
     return {
       response: httpResponse.badRequest(invalidPayloadMessage),

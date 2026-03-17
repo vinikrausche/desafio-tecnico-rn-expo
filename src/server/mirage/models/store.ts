@@ -1,7 +1,4 @@
-import type {
-  CreateStorePayload,
-  UpdateStorePayload,
-} from '../dto/store.dto';
+import type { CreateStorePayload, UpdateStorePayload } from '../dto/store.dto';
 import {
   readMockDb,
   type MockDatabaseState,
@@ -48,15 +45,10 @@ function replaceStore(
   stores: StoreRecord[],
   nextStore: StoreRecord,
 ): StoreRecord[] {
-  return stores.map((store) =>
-    store.id === nextStore.id ? nextStore : store,
-  );
+  return stores.map((store) => (store.id === nextStore.id ? nextStore : store));
 }
 
-function writeStores(
-  snapshot: MockDatabaseState,
-  stores: StoreRecord[],
-): void {
+function writeStores(snapshot: MockDatabaseState, stores: StoreRecord[]): void {
   writeMockDb({
     ...snapshot,
     stores,

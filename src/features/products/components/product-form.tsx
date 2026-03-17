@@ -54,7 +54,9 @@ export function ProductForm({
   return (
     <Card style={styles.card}>
       <VStack style={styles.content}>
-        {errors.form ? <Text style={styles.formError}>{errors.form}</Text> : null}
+        {errors.form ? (
+          <Text style={styles.formError}>{errors.form}</Text>
+        ) : null}
 
         {shouldShowStoreField ? (
           <VStack style={styles.field}>
@@ -86,7 +88,9 @@ export function ProductForm({
                         <Text
                           style={[
                             styles.storeOptionAddress,
-                            isSelected ? styles.storeOptionAddressSelected : null,
+                            isSelected
+                              ? styles.storeOptionAddressSelected
+                              : null,
                           ]}
                         >
                           {store.address}
@@ -97,7 +101,9 @@ export function ProductForm({
                 })}
               </VStack>
             ) : (
-              <Text style={styles.storeEmptyText}>Nenhuma loja disponivel.</Text>
+              <Text style={styles.storeEmptyText}>
+                Nenhuma loja disponivel.
+              </Text>
             )}
 
             {errors.storeId ? (
@@ -117,7 +123,9 @@ export function ProductForm({
               value={formValues.name}
             />
           </Input>
-          {errors.name ? <Text style={styles.fieldError}>{errors.name}</Text> : null}
+          {errors.name ? (
+            <Text style={styles.fieldError}>{errors.name}</Text>
+          ) : null}
         </VStack>
 
         <VStack style={styles.field}>
@@ -131,7 +139,9 @@ export function ProductForm({
               value={formValues.category}
             />
           </Input>
-          {errors.category ? <Text style={styles.fieldError}>{errors.category}</Text> : null}
+          {errors.category ? (
+            <Text style={styles.fieldError}>{errors.category}</Text>
+          ) : null}
         </VStack>
 
         <VStack style={styles.field}>
@@ -145,7 +155,9 @@ export function ProductForm({
               value={formValues.price}
             />
           </Input>
-          {errors.price ? <Text style={styles.fieldError}>{errors.price}</Text> : null}
+          {errors.price ? (
+            <Text style={styles.fieldError}>{errors.price}</Text>
+          ) : null}
         </VStack>
 
         <VStack style={styles.buttonGroup}>

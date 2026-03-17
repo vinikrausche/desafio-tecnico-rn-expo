@@ -49,7 +49,9 @@ function shortenAddress(address: string) {
 
 export default function HomeScreen() {
   const router = useRouter();
-  const catalogErrorMessage = useProductZustand((state) => state.catalogErrorMessage);
+  const catalogErrorMessage = useProductZustand(
+    (state) => state.catalogErrorMessage,
+  );
   const catalogStatus = useProductZustand((state) => state.catalogStatus);
   const loadCatalog = useProductZustand((state) => state.loadCatalog);
   const productIds = useProductZustand((state) => state.productIds);
@@ -73,7 +75,9 @@ export default function HomeScreen() {
     () =>
       productIds
         .map((productId) => productsById[productId])
-        .filter((product): product is NonNullable<typeof product> => Boolean(product)),
+        .filter((product): product is NonNullable<typeof product> =>
+          Boolean(product),
+        ),
     [productIds, productsById],
   );
   const stores = useMemo(
@@ -87,10 +91,14 @@ export default function HomeScreen() {
   const totalStores = stores.length;
   const totalProducts = products.length;
   const activeStores = stores.filter((store) => store.productCount > 0).length;
-  const stockValue = products.reduce((total, product) => total + product.price, 0);
+  const stockValue = products.reduce(
+    (total, product) => total + product.price,
+    0,
+  );
   const leadingStore =
-    [...stores].sort((left, right) => right.productCount - left.productCount)[0] ??
-    null;
+    [...stores].sort(
+      (left, right) => right.productCount - left.productCount,
+    )[0] ?? null;
   const spotlightStores = [...stores]
     .sort((left, right) => right.productCount - left.productCount)
     .slice(0, 3);
@@ -180,7 +188,9 @@ export default function HomeScreen() {
           <Card style={styles.metricCardAccent}>
             <VStack style={styles.metricContent}>
               <Text style={styles.metricLabel}>Valor</Text>
-              <Heading style={styles.metricValueAccent}>{formatCurrency(stockValue)}</Heading>
+              <Heading style={styles.metricValueAccent}>
+                {formatCurrency(stockValue)}
+              </Heading>
             </VStack>
           </Card>
         </VStack>
@@ -212,7 +222,9 @@ export default function HomeScreen() {
                         action.variant === 'primary'
                           ? styles.actionTileIconWrapPrimary
                           : styles.actionTileIconWrapSecondary,
-                        action.isDisabled ? styles.actionTileIconWrapDisabled : null,
+                        action.isDisabled
+                          ? styles.actionTileIconWrapDisabled
+                          : null,
                       ]}
                     >
                       <Icon
@@ -230,7 +242,9 @@ export default function HomeScreen() {
                       style={[
                         styles.actionTileText,
                         styles.actionTileTextDefault,
-                        action.isDisabled ? styles.actionTileTextDisabled : null,
+                        action.isDisabled
+                          ? styles.actionTileTextDisabled
+                          : null,
                       ]}
                     >
                       {action.label}
@@ -282,7 +296,9 @@ export default function HomeScreen() {
                 </HStack>
               </VStack>
             ) : (
-              <Text style={styles.emptyStateText}>Nenhuma loja cadastrada.</Text>
+              <Text style={styles.emptyStateText}>
+                Nenhuma loja cadastrada.
+              </Text>
             )}
           </VStack>
         </Card>
@@ -303,20 +319,30 @@ export default function HomeScreen() {
             {isLoadingDashboard ? (
               <HStack style={styles.loadingRow}>
                 <Spinner size="large" color={corporateTheme.colors.brand} />
-                <Text style={styles.loadingText}>Carregando visão resumida...</Text>
+                <Text style={styles.loadingText}>
+                  Carregando visão resumida...
+                </Text>
               </HStack>
             ) : null}
 
             {hasDashboardError ? (
               <VStack style={styles.feedbackBlock}>
-                <Text style={styles.feedbackTitle}>Falha ao carregar o dashboard</Text>
+                <Text style={styles.feedbackTitle}>
+                  Falha ao carregar o dashboard
+                </Text>
                 <Text style={styles.feedbackText}>
-                  {dashboardErrorMessage ?? 'O mock não respondeu como esperado.'}
+                  {dashboardErrorMessage ??
+                    'O mock não respondeu como esperado.'}
                 </Text>
 
                 <Button
                   style={styles.retryButton}
-                  onPress={() => void Promise.all([loadStores({ force: true }), loadCatalog({ force: true })])}
+                  onPress={() =>
+                    void Promise.all([
+                      loadStores({ force: true }),
+                      loadCatalog({ force: true }),
+                    ])
+                  }
                 >
                   <Text style={styles.retryButtonText}>Tentar novamente</Text>
                 </Button>
@@ -324,7 +350,9 @@ export default function HomeScreen() {
             ) : null}
 
             {isDashboardReady && spotlightStores.length === 0 ? (
-              <Text style={styles.emptyStateText}>Nenhuma loja cadastrada.</Text>
+              <Text style={styles.emptyStateText}>
+                Nenhuma loja cadastrada.
+              </Text>
             ) : null}
 
             {isDashboardReady ? (

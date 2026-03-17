@@ -34,7 +34,9 @@ export function registerProductRoutes(server: Server) {
       return httpResponse.notFound('A loja informada não existe.');
     }
 
-    return httpResponse.created(mockRetailModel.createProduct(validationResult.data));
+    return httpResponse.created(
+      mockRetailModel.createProduct(validationResult.data),
+    );
   });
 
   server.put('/products/:productId', (_schema, request) => {

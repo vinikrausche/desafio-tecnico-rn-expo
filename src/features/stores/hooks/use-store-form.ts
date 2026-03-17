@@ -24,14 +24,17 @@ export function useStoreForm(defaultValues: Partial<StoreFormValues> = {}) {
   }, []);
 
   // ! Atualizacao de campos e feedback visual ficam centralizados para os fluxos de loja.
-  const updateField = useCallback((field: StoreFormField, value: string) => {
-    setFormValues((current) => ({
-      ...current,
-      [field]: value,
-    }));
+  const updateField = useCallback(
+    (field: StoreFormField, value: string) => {
+      setFormValues((current) => ({
+        ...current,
+        [field]: value,
+      }));
 
-    clearFieldError(field);
-  }, [clearFieldError]);
+      clearFieldError(field);
+    },
+    [clearFieldError],
+  );
 
   const replaceFormValues = useCallback((values: Partial<StoreFormValues>) => {
     setFormValues((current) => ({

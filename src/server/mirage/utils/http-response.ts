@@ -2,7 +2,25 @@ import { Response } from 'miragejs';
 
 type ErrorDetails = Record<string, unknown> | undefined;
 type ResponseHeaders = Record<string, string>;
-type JsonBody = string | number | boolean | null | Record<string, unknown> | unknown[];
+type JsonBody =
+  | string
+  | number
+  | boolean
+  | null
+  | Record<string, unknown>
+  | unknown[];
+
+function normalizeMirageBody(body: JsonBody): string | object {
+  if (typeof body === 'string') {
+    return body;
+  }
+
+  if (typeof body === 'number' || typeof body === 'boolean' || body === null) {
+    return JSON.stringify(body);
+  }
+
+  return body;
+}
 
 function json(status: number, body: JsonBody, headers: ResponseHeaders = {}) {
   return new Response(
@@ -11,7 +29,7 @@ function json(status: number, body: JsonBody, headers: ResponseHeaders = {}) {
       'Content-Type': 'application/json',
       ...headers,
     },
-    body as string | {},
+    normalizeMirageBody(body),
   );
 }
 
@@ -54,7 +72,10 @@ export const httpResponse = {
   unprocessableEntity(message: string, details?: ErrorDetails) {
     return json(422, errorBody(message, details));
   },
-  internalServerError(message = 'Erro interno do servidor.', details?: ErrorDetails) {
+  internalServerError(
+    message = 'Erro interno do servidor.',
+    details?: ErrorDetails,
+  ) {
     return json(500, errorBody(message, details));
   },
 };

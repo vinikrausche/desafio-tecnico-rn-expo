@@ -1,3 +1,8 @@
+import { productsService } from '../features/products/services/products.service';
+import type { ProductSummary } from '../features/products/product.types';
+import { useProductZustand } from './product';
+import { useStoreZustand } from './store';
+
 jest.mock('../features/products/services/products.service', () => ({
   productsService: {
     create: jest.fn(),
@@ -7,11 +12,6 @@ jest.mock('../features/products/services/products.service', () => ({
     update: jest.fn(),
   },
 }));
-
-import { productsService } from '../features/products/services/products.service';
-import type { ProductSummary } from '../features/products/product.types';
-import { useProductZustand } from './product';
-import { useStoreZustand } from './store';
 
 const mockedProductsService = jest.mocked(productsService);
 const initialProductState = useProductZustand.getState();
@@ -86,11 +86,15 @@ describe('useProductZustand', () => {
       storeId: 'store-1',
     });
 
-    expect(useProductZustand.getState().productsById['product-1']).toEqual(createdProduct);
+    expect(useProductZustand.getState().productsById['product-1']).toEqual(
+      createdProduct,
+    );
     expect(useProductZustand.getState().productIdsByStore['store-1']).toEqual([
       'product-1',
     ]);
-    expect(useStoreZustand.getState().storesById['store-1']?.productCount).toBe(1);
+    expect(useStoreZustand.getState().storesById['store-1']?.productCount).toBe(
+      1,
+    );
   });
 
   it('remove o produto do cache e decrementa a contagem da loja', async () => {
@@ -133,6 +137,8 @@ describe('useProductZustand', () => {
 
     expect(useProductZustand.getState().productIds).toEqual([]);
     expect(useProductZustand.getState().productsById).toEqual({});
-    expect(useStoreZustand.getState().storesById['store-1']?.productCount).toBe(0);
+    expect(useStoreZustand.getState().storesById['store-1']?.productCount).toBe(
+      0,
+    );
   });
 });

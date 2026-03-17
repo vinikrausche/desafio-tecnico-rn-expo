@@ -37,7 +37,9 @@ function attachStoreName(
 // ! A tela principal de produtos le do cache global e aproveita o catalogo ja hidratado.
 export default function ProductsCatalogScreen() {
   const router = useRouter();
-  const catalogErrorMessage = useProductZustand((state) => state.catalogErrorMessage);
+  const catalogErrorMessage = useProductZustand(
+    (state) => state.catalogErrorMessage,
+  );
   const catalogStatus = useProductZustand((state) => state.catalogStatus);
   const deleteProduct = useProductZustand((state) => state.deleteProduct);
   const loadCatalog = useProductZustand((state) => state.loadCatalog);
@@ -60,7 +62,9 @@ export default function ProductsCatalogScreen() {
     () =>
       productIds
         .map((productId) => productsById[productId])
-        .filter((product): product is NonNullable<typeof product> => Boolean(product)),
+        .filter((product): product is NonNullable<typeof product> =>
+          Boolean(product),
+        ),
     [productIds, productsById],
   );
   const catalogProducts = useMemo(
@@ -68,7 +72,8 @@ export default function ProductsCatalogScreen() {
     [products, storesById],
   );
   const hasCatalogError = catalogStatus === 'error';
-  const isLoadingCatalog = catalogStatus === 'idle' || catalogStatus === 'loading';
+  const isLoadingCatalog =
+    catalogStatus === 'idle' || catalogStatus === 'loading';
 
   async function handleDeleteProduct(productId: string, storeId: string) {
     try {
@@ -76,7 +81,9 @@ export default function ProductsCatalogScreen() {
       await deleteProduct(productId, storeId);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Nao foi possivel excluir o produto.';
+        error instanceof Error
+          ? error.message
+          : 'Nao foi possivel excluir o produto.';
 
       Alert.alert('Erro ao excluir', message);
     } finally {
@@ -84,17 +91,25 @@ export default function ProductsCatalogScreen() {
     }
   }
 
-  function confirmDeleteProduct(productId: string, productName: string, storeId: string) {
-    Alert.alert('Excluir produto', `Deseja excluir o produto "${productName}"?`, [
-      { style: 'cancel', text: 'Cancelar' },
-      {
-        style: 'destructive',
-        text: 'Excluir',
-        onPress: () => {
-          void handleDeleteProduct(productId, storeId);
+  function confirmDeleteProduct(
+    productId: string,
+    productName: string,
+    storeId: string,
+  ) {
+    Alert.alert(
+      'Excluir produto',
+      `Deseja excluir o produto "${productName}"?`,
+      [
+        { style: 'cancel', text: 'Cancelar' },
+        {
+          style: 'destructive',
+          text: 'Excluir',
+          onPress: () => {
+            void handleDeleteProduct(productId, storeId);
+          },
         },
-      },
-    ]);
+      ],
+    );
   }
 
   return (
@@ -135,7 +150,8 @@ export default function ProductsCatalogScreen() {
             <VStack style={styles.content}>
               <Text style={styles.errorTitle}>Falha ao carregar</Text>
               <Text style={styles.errorText}>
-                {catalogErrorMessage ?? 'Não foi possível carregar os produtos.'}
+                {catalogErrorMessage ??
+                  'Não foi possível carregar os produtos.'}
               </Text>
 
               <Button
@@ -147,13 +163,17 @@ export default function ProductsCatalogScreen() {
                   ])
                 }
               >
-                <ButtonText style={styles.retryButtonText}>Tentar novamente</ButtonText>
+                <ButtonText style={styles.retryButtonText}>
+                  Tentar novamente
+                </ButtonText>
               </Button>
             </VStack>
           </Card>
         ) : null}
 
-        {!isLoadingCatalog && !hasCatalogError && catalogProducts.length === 0 ? (
+        {!isLoadingCatalog &&
+        !hasCatalogError &&
+        catalogProducts.length === 0 ? (
           <Card style={styles.emptyCard}>
             <Text style={styles.emptyText}>Nenhum produto cadastrado.</Text>
           </Card>
@@ -169,10 +189,16 @@ export default function ProductsCatalogScreen() {
                     return;
                   }
 
-                  confirmDeleteProduct(product.id, product.name, product.storeId);
+                  confirmDeleteProduct(
+                    product.id,
+                    product.name,
+                    product.storeId,
+                  );
                 }}
                 onEdit={() =>
-                  router.push(`/stores/${product.storeId}/products/${product.id}/edit`)
+                  router.push(
+                    `/stores/${product.storeId}/products/${product.id}/edit`,
+                  )
                 }
                 product={product}
               />

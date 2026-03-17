@@ -1,3 +1,7 @@
+import { storesService } from '../features/stores/services/stores.service';
+import type { StoreSummary } from '../features/stores/store.types';
+import { useStoreZustand } from './store';
+
 jest.mock('../features/stores/services/stores.service', () => ({
   storesService: {
     create: jest.fn(),
@@ -6,10 +10,6 @@ jest.mock('../features/stores/services/stores.service', () => ({
     update: jest.fn(),
   },
 }));
-
-import { storesService } from '../features/stores/services/stores.service';
-import type { StoreSummary } from '../features/stores/store.types';
-import { useStoreZustand } from './store';
 
 const mockedStoresService = jest.mocked(storesService);
 const initialStoreState = useStoreZustand.getState();
@@ -59,7 +59,9 @@ describe('useStoreZustand', () => {
       name: 'Loja Nova',
     });
 
-    expect(useStoreZustand.getState().storesById['store-10']).toEqual(createdStore);
+    expect(useStoreZustand.getState().storesById['store-10']).toEqual(
+      createdStore,
+    );
     expect(useStoreZustand.getState().storeIds).toEqual(['store-10']);
   });
 

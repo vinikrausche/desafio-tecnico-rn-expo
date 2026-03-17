@@ -28,16 +28,22 @@ type StoreZustandState = {
   deleteStore: (storeId: string) => Promise<void>;
   adjustProductCount: (storeId: string, amount?: number) => void;
   loadStores: (options?: LoadOptions) => Promise<StoreSummary[]>;
-  updateStore: (storeId: string, payload: UpdateStoreInput) => Promise<StoreSummary>;
+  updateStore: (
+    storeId: string,
+    payload: UpdateStoreInput,
+  ) => Promise<StoreSummary>;
 };
 
 let storesRequest: Promise<StoreSummary[]> | null = null;
 
 function normalizeStores(stores: StoreSummary[]): StoreCacheSnapshot {
-  const storesById = stores.reduce<Record<string, StoreSummary>>((accumulator, store) => {
-    accumulator[store.id] = store;
-    return accumulator;
-  }, {});
+  const storesById = stores.reduce<Record<string, StoreSummary>>(
+    (accumulator, store) => {
+      accumulator[store.id] = store;
+      return accumulator;
+    },
+    {},
+  );
 
   return {
     storeIds: stores.map((store) => store.id),
@@ -74,7 +80,9 @@ function removeStore(
   delete nextStoresById[storeId];
 
   return {
-    storeIds: state.storeIds.filter((currentStoreId) => currentStoreId !== storeId),
+    storeIds: state.storeIds.filter(
+      (currentStoreId) => currentStoreId !== storeId,
+    ),
     storesById: nextStoresById,
   };
 }
@@ -172,7 +180,9 @@ export const useStoreZustand = create<StoreZustandState>((set, get) => ({
       return stores;
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Nao foi possivel carregar as lojas.';
+        error instanceof Error
+          ? error.message
+          : 'Nao foi possivel carregar as lojas.';
 
       set({
         errorMessage: message,

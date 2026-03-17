@@ -17,7 +17,9 @@ export default function NotFoundScreen() {
 
           <Link href="/" asChild>
             <Button style={styles.button}>
-              <ButtonText style={styles.buttonText}>Ir para o início</ButtonText>
+              <ButtonText style={styles.buttonText}>
+                Ir para o início
+              </ButtonText>
             </Button>
           </Link>
         </VStack>

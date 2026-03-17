@@ -1,4 +1,11 @@
-import { Badge, BadgeText, Card, Heading, Text, VStack } from '@gluestack-ui/themed';
+import {
+  Badge,
+  BadgeText,
+  Card,
+  Heading,
+  Text,
+  VStack,
+} from '@gluestack-ui/themed';
 import { type PropsWithChildren, type ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -35,7 +42,9 @@ export function ScreenShell({
                 <BadgeText style={styles.badgeText}>{eyebrow}</BadgeText>
               </Badge>
               <Heading style={styles.title}>{title}</Heading>
-              {description ? <Text style={styles.description}>{description}</Text> : null}
+              {description ? (
+                <Text style={styles.description}>{description}</Text>
+              ) : null}
             </VStack>
           </Card>
 

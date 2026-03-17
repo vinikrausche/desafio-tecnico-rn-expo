@@ -51,7 +51,9 @@ export function StoreListCard({
           </Badge>
         </HStack>
 
-        <Text style={styles.meta}>{formatProductCount(store.productCount)}</Text>
+        <Text style={styles.meta}>
+          {formatProductCount(store.productCount)}
+        </Text>
 
         <HStack style={styles.actionsGrid}>
           <Button

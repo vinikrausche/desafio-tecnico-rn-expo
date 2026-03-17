@@ -24,14 +24,17 @@ export function useCreateProductForm(defaultStoreId = '') {
   }, []);
 
   // ! Field updates and validation feedback stay centralized to keep both screens identical.
-  const updateField = useCallback((field: CreateProductFormField, value: string) => {
-    setFormValues((current) => ({
-      ...current,
-      [field]: value,
-    }));
+  const updateField = useCallback(
+    (field: CreateProductFormField, value: string) => {
+      setFormValues((current) => ({
+        ...current,
+        [field]: value,
+      }));
 
-    clearFieldError(field);
-  }, [clearFieldError]);
+      clearFieldError(field);
+    },
+    [clearFieldError],
+  );
 
   const setFormError = useCallback((message: string) => {
     setErrors((current) => ({
@@ -40,22 +43,28 @@ export function useCreateProductForm(defaultStoreId = '') {
     }));
   }, []);
 
-  const syncStoreId = useCallback((storeId: string) => {
-    setFormValues((current) =>
-      current.storeId === storeId ? current : { ...current, storeId },
-    );
+  const syncStoreId = useCallback(
+    (storeId: string) => {
+      setFormValues((current) =>
+        current.storeId === storeId ? current : { ...current, storeId },
+      );
 
-    clearFieldError('storeId');
-  }, [clearFieldError]);
+      clearFieldError('storeId');
+    },
+    [clearFieldError],
+  );
 
-  const replaceFormValues = useCallback((values: Partial<CreateProductFormValues>) => {
-    setFormValues((current) => ({
-      ...current,
-      ...values,
-    }));
+  const replaceFormValues = useCallback(
+    (values: Partial<CreateProductFormValues>) => {
+      setFormValues((current) => ({
+        ...current,
+        ...values,
+      }));
 
-    setErrors({});
-  }, []);
+      setErrors({});
+    },
+    [],
+  );
 
   const getPayload = useCallback(() => {
     const result = buildCreateProductInput(formValues);

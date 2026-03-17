@@ -1,9 +1,6 @@
 import type { Server } from 'miragejs';
 
-import {
-  createStoreDtoSchema,
-  updateStoreDtoSchema,
-} from '../dto/store.dto';
+import { createStoreDtoSchema, updateStoreDtoSchema } from '../dto/store.dto';
 import { mockRetailModel } from '../models/mock-retail.model';
 import { httpResponse } from '../utils/http-response';
 import { validateRequestBody } from '../utils/validate-request-body';
@@ -25,7 +22,9 @@ export function registerStoreRoutes(server: Server) {
       return validationResult.response;
     }
 
-    return httpResponse.created(mockRetailModel.createStore(validationResult.data));
+    return httpResponse.created(
+      mockRetailModel.createStore(validationResult.data),
+    );
   });
 
   server.put('/stores/:storeId', (_schema, request) => {
@@ -45,7 +44,10 @@ export function registerStoreRoutes(server: Server) {
       return validationResult.response;
     }
 
-    const nextStore = mockRetailModel.updateStore(storeId, validationResult.data);
+    const nextStore = mockRetailModel.updateStore(
+      storeId,
+      validationResult.data,
+    );
 
     if (!nextStore) {
       return httpResponse.notFound('Loja não encontrada.');
