@@ -1,10 +1,10 @@
 # Retail Hub Mobile
 
-Scaffold inicial do desafio técnico em React Native com Expo. A base foi criada com a stack pedida, mas sem implementar as funcionalidades de lojas e produtos.
+Aplicativo mobile desenvolvido em React Native com Expo para centralizar o cadastro de lojas e produtos de uma rede varejista. O projeto usa MirageJS para simular o back-end localmente, Zustand para cache global de dados e Gluestack UI para a interface.
 
 ## Stack e versões
 
-- Node: `20.16.0` no ambiente atual, mas o template gerado com Expo SDK 55 / React Native 0.83 recomenda `Node >= 20.19.4`
+- Node recomendado para build e CI: `>= 20.19.4`
 - Expo: `~55.0.6`
 - React: `19.2.0`
 - React Native: `0.83.2`
@@ -14,22 +14,32 @@ Scaffold inicial do desafio técnico em React Native com Expo. A base foi criada
 - Zustand: `^5.0.12`
 - MirageJS: `^0.1.48`
 
-## O que já está pronto
+## Escopo entregue
 
-- Projeto Expo configurado com TypeScript
+- Dashboard inicial com indicadores de lojas, produtos, lojas com estoque e valor total mockado do catálogo
+- Módulo de lojas com listagem, cadastro, edição e exclusão
+- Abertura dos produtos vinculados a uma loja selecionada
+- Módulo de produtos com listagem geral, listagem por loja, cadastro, edição e exclusão
+- Cadastro de produto com vínculo obrigatório a uma loja
+- Cache global com Zustand para evitar refetch desnecessário ao navegar entre telas
+- Mock de API com MirageJS usando endpoints para `/stores` e `/products`
 - Navegação com Expo Router
-- Provider global com Gluestack UI
-- Estado inicial com Zustand e persistência base via AsyncStorage
-- Mock API local com MirageJS e endpoints simulados para `/stores` e `/products`
-- Estrutura de pastas preparada para evoluir os módulos de lojas e produtos
+- Interface construída com Gluestack UI e tema visual corporativo
+- Suíte inicial de testes unitários com Jest
+- Pipeline de CI com GitHub Actions para validar tipos, testes e build web em pull requests
 
-## O que ainda não foi feito
+## Fluxo de dados
 
-- Listagem de lojas
-- Cadastro, edição e exclusão de lojas
-- Listagem de produtos por loja
-- Cadastro, edição e exclusão de produtos
-- Busca, filtros, testes e refinamentos de UX
+O fluxo principal do app está organizado assim:
+
+`Tela -> service -> client -> MirageJS -> models -> in-memory-db`
+
+Na interface:
+
+- `src/zustand/store.ts` mantém o cache global de lojas
+- `src/zustand/product.ts` mantém o cache global de produtos
+- os dados são carregados na primeira hidratação e reutilizados nas próximas navegações
+- após criar, editar ou excluir um registro, o cache global é atualizado sem necessidade de recarregar toda a aplicação
 
 ## Instalação
 
@@ -43,7 +53,7 @@ npm install
 npm run start
 ```
 
-Para abrir diretamente nas plataformas:
+Atalhos por plataforma:
 
 ```bash
 npm run android
@@ -51,14 +61,22 @@ npm run ios
 npm run web
 ```
 
+## Testes
+
+```bash
+npm run test
+npm run test:ci
+```
+
 ## Mock de back-end
 
-Nenhum processo separado é necessário neste scaffold.
+Nenhum processo separado precisa ser iniciado.
 
-- Em ambiente de desenvolvimento, o app inicializa automaticamente o MirageJS ao subir.
-- A organização do mock fica em `src/server/mirage`.
+- em ambiente de desenvolvimento, o MirageJS sobe automaticamente no bootstrap do app
+- a base da API mockada usa `https://mock.api.local`
+- os dados ficam em memória e são recriados quando o app é reiniciado em desenvolvimento
 
-Endpoints preparados:
+Endpoints simulados:
 
 - `GET /stores`
 - `POST /stores`
@@ -76,6 +94,9 @@ Endpoints preparados:
 app/
   _layout.tsx
   index.tsx
+  products/
+    index.tsx
+    new.tsx
   stores/
     index.tsx
     new.tsx
@@ -86,38 +107,56 @@ app/
         new.tsx
         [productId]/
           edit.tsx
+
 src/
   components/
+    actions/
+    icons/
     layout/
-    ui/
   features/
-    stores/
-      components/
-      hooks/
-      services/
-      types/
-      validators/
+    dashboard/
     products/
-      components/
-      hooks/
-      services/
-      types/
-      validators/
+    stores/
+  lib/
+    api/
   providers/
-  lib/api/
-  lib/utils/
   server/
     mirage/
-      routes/
+      dto/
       models/
-      factories/
+      routes/
       seeds/
-      serializers/
+      utils/
   store/
+  theme/
+  zustand/
 ```
 
-## Validação
+## Comandos úteis
 
 ```bash
 npm run typecheck
+npm run test
+npm run build:web
 ```
+
+## CI
+
+O projeto possui uma workflow em `.github/workflows/ci.yaml` com execução em `pull_request`.
+
+Validações da pipeline:
+
+- `npm ci`
+- `npm run typecheck`
+- `npm run test:ci`
+- `npm run build:web`
+
+## Diferenciais possíveis para evolução
+
+Os itens abaixo podem ser adicionados depois, mas não são necessários para executar a versão atual:
+
+- busca e filtro de lojas e produtos
+- testes de interface com Testing Library React Native
+- persistência offline com AsyncStorage
+- lint e formatter
+- prints e link de publicação com Expo
