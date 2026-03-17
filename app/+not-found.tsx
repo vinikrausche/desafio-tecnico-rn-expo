@@ -1,12 +1,8 @@
 import { Button, ButtonText, Card, Text, VStack } from '@gluestack-ui/themed';
 import { Link } from 'expo-router';
-import { StyleSheet } from 'react-native';
 
 import { ScreenShell } from '../src/components/layout/screen-shell';
-import {
-  centeredButtonStyle,
-  centeredButtonTextStyle,
-} from '../src/theme/button-presets';
+import { notFoundScreenStyles as styles } from './+not-found.styles';
 
 export default function NotFoundScreen() {
   return (
@@ -27,31 +23,3 @@ export default function NotFoundScreen() {
     </ScreenShell>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    ...centeredButtonStyle,
-    backgroundColor: '#163020',
-    minHeight: 52,
-  },
-  buttonText: {
-    ...centeredButtonTextStyle,
-    color: '#f8f4ec',
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    borderColor: '#d9d4ca',
-    borderWidth: 1,
-    padding: 18,
-  },
-  content: {
-    gap: 16,
-  },
-  text: {
-    color: '#495057',
-    fontSize: 15,
-    lineHeight: 22,
-  },
-});

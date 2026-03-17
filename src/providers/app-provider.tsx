@@ -8,10 +8,10 @@ import {
 } from '@gluestack-ui/themed';
 import { StatusBar } from 'expo-status-bar';
 import { type PropsWithChildren, useEffect, useRef } from 'react';
-import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { appProviderStyles as styles } from './app-provider.styles';
 import { useAppBootstrapStore } from '../store/app-bootstrap.store';
 
 async function bootstrapApplication() {
@@ -97,33 +97,3 @@ export function AppProvider({ children }: PropsWithChildren) {
     </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  fallbackContainer: {
-    alignItems: 'center',
-    backgroundColor: '#f5efe6',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-  },
-  fallbackContent: {
-    alignItems: 'center',
-    gap: 12,
-    maxWidth: 320,
-  },
-  fallbackText: {
-    color: '#495057',
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: 'center',
-  },
-  fallbackTitle: {
-    color: '#1f2933',
-    fontSize: 22,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  root: {
-    flex: 1,
-  },
-});
