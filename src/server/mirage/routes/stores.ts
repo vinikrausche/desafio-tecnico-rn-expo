@@ -1,9 +1,9 @@
-import type { Request, Server } from 'miragejs';
+import type { Server } from 'miragejs';
 
-import type {
-  CreateStorePayload,
-  UpdateStorePayload,
-} from '../../../features/stores/types/store';
+import {
+  createStoreDtoSchema,
+  updateStoreDtoSchema,
+} from '../dto/store.dto';
 import {
   createStore,
   deleteStore,
@@ -13,35 +13,7 @@ import {
   updateStore,
 } from '../seeds/in-memory-db';
 import { httpResponse } from '../utils/http-response';
-
-function parseRequestBody<T>(request: Request): T | null {
-  if (!request.requestBody) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(request.requestBody) as T;
-  } catch {
-    return null;
-  }
-}
-
-function isStorePayload(
-  payload: unknown,
-): payload is CreateStorePayload | UpdateStorePayload {
-  if (typeof payload !== 'object' || payload === null) {
-    return false;
-  }
-
-  const candidate = payload as Record<string, unknown>;
-
-  return (
-    typeof candidate.name === 'string' &&
-    candidate.name.trim().length > 0 &&
-    typeof candidate.address === 'string' &&
-    candidate.address.trim().length > 0
-  );
-}
+import { validateRequestBody } from '../utils/validate-request-body';
 
 export function registerStoreRoutes(server: Server) {
   server.get('/stores', () => {
@@ -49,28 +21,37 @@ export function registerStoreRoutes(server: Server) {
   });
 
   server.post('/stores', (_schema, request) => {
-    const payload = parseRequestBody<CreateStorePayload>(request);
+    const validationResult = validateRequestBody(
+      request,
+      createStoreDtoSchema,
+      'Payload inválido para criação de loja.',
+    );
 
-    if (!isStorePayload(payload)) {
-      return httpResponse.badRequest('Payload inválido para criação de loja.');
+    if (!validationResult.success) {
+      return validationResult.response;
     }
 
-    return httpResponse.created(createStore(payload));
+    return httpResponse.created(createStore(validationResult.data));
   });
 
   server.put('/stores/:storeId', (_schema, request) => {
-    const payload = parseRequestBody<UpdateStorePayload>(request);
     const storeId = request.params.storeId;
-
-    if (!isStorePayload(payload)) {
-      return httpResponse.badRequest('Payload inválido para atualização de loja.');
-    }
 
     if (!storeId) {
       return httpResponse.notFound('Loja não encontrada.');
     }
 
-    const nextStore = updateStore(storeId, payload);
+    const validationResult = validateRequestBody(
+      request,
+      updateStoreDtoSchema,
+      'Payload inválido para atualização de loja.',
+    );
+
+    if (!validationResult.success) {
+      return validationResult.response;
+    }
+
+    const nextStore = updateStore(storeId, validationResult.data);
 
     if (!nextStore) {
       return httpResponse.notFound('Loja não encontrada.');

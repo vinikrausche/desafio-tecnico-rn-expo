@@ -1,13 +1,26 @@
 import type {
   CreateProductPayload,
-  ProductEntity,
   UpdateProductPayload,
-} from '../../../features/products/types/product';
+} from '../dto/product.dto';
 import type {
   CreateStorePayload,
-  StoreEntity,
   UpdateStorePayload,
-} from '../../../features/stores/types/store';
+} from '../dto/store.dto';
+
+type ProductEntity = {
+  category: string;
+  id: string;
+  name: string;
+  price: number;
+  storeId: string;
+};
+
+type StoreEntity = {
+  address: string;
+  id: string;
+  name: string;
+  productCount: number;
+};
 
 type StoreRecord = Omit<StoreEntity, 'productCount'>;
 
