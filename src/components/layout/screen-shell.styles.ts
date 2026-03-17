@@ -24,6 +24,11 @@ export const screenShellStyles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 24,
   },
+  floatingActionContainer: {
+    bottom: 24,
+    position: 'absolute',
+    right: 20,
+  },
   heroCard: {
     ...corporateShadows.hero,
     backgroundColor: corporateTheme.colors.brandStrong,
@@ -43,6 +48,9 @@ export const screenShellStyles = StyleSheet.create({
     paddingBottom: 28,
     paddingHorizontal: 20,
     paddingTop: 20,
+  },
+  scrollContentWithFloatingAction: {
+    paddingBottom: 120,
   },
   stack: {
     gap: 18,

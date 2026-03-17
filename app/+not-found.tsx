@@ -6,17 +6,10 @@ import { ScreenShell } from '../src/components/layout/screen-shell';
 
 export default function NotFoundScreen() {
   return (
-    <ScreenShell
-      eyebrow="404"
-      title="Rota não encontrada"
-      description="O Expo Router já está ativo, mas o caminho acessado não existe nesta base inicial."
-    >
+    <ScreenShell eyebrow="404" title="Rota não encontrada">
       <Card style={styles.card}>
         <VStack style={styles.content}>
-          <Text style={styles.text}>
-            Volte para a tela inicial para continuar a evolução do projeto a partir da
-            estrutura criada.
-          </Text>
+          <Text style={styles.text}>Caminho indisponível.</Text>
 
           <Link href="/" asChild>
             <Button style={styles.button}>

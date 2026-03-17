@@ -4,20 +4,14 @@ import {
   createStoreDtoSchema,
   updateStoreDtoSchema,
 } from '../dto/store.dto';
-import {
-  createStore,
-  deleteStore,
-  getStore,
-  listProducts,
-  listStores,
-  updateStore,
-} from '../seeds/in-memory-db';
+import { mockRetailModel } from '../models/mock-retail.model';
 import { httpResponse } from '../utils/http-response';
 import { validateRequestBody } from '../utils/validate-request-body';
 
+// ! Store routes delegate persistence rules to the model layer.
 export function registerStoreRoutes(server: Server) {
   server.get('/stores', () => {
-    return httpResponse.ok(listStores());
+    return httpResponse.ok(mockRetailModel.listStores());
   });
 
   server.post('/stores', (_schema, request) => {
@@ -31,7 +25,7 @@ export function registerStoreRoutes(server: Server) {
       return validationResult.response;
     }
 
-    return httpResponse.created(createStore(validationResult.data));
+    return httpResponse.created(mockRetailModel.createStore(validationResult.data));
   });
 
   server.put('/stores/:storeId', (_schema, request) => {
@@ -51,7 +45,7 @@ export function registerStoreRoutes(server: Server) {
       return validationResult.response;
     }
 
-    const nextStore = updateStore(storeId, validationResult.data);
+    const nextStore = mockRetailModel.updateStore(storeId, validationResult.data);
 
     if (!nextStore) {
       return httpResponse.notFound('Loja não encontrada.');
@@ -67,7 +61,7 @@ export function registerStoreRoutes(server: Server) {
       return httpResponse.notFound('Loja não encontrada.');
     }
 
-    const removed = deleteStore(storeId);
+    const removed = mockRetailModel.deleteStore(storeId);
 
     if (!removed) {
       return httpResponse.notFound('Loja não encontrada.');
@@ -83,12 +77,12 @@ export function registerStoreRoutes(server: Server) {
       return httpResponse.notFound('Loja não encontrada.');
     }
 
-    const store = getStore(storeId);
+    const store = mockRetailModel.getStore(storeId);
 
     if (!store) {
       return httpResponse.notFound('Loja não encontrada.');
     }
 
-    return httpResponse.ok(listProducts(storeId));
+    return httpResponse.ok(mockRetailModel.listProducts(storeId));
   });
 }

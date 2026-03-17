@@ -1,14 +1,15 @@
 import { Badge, BadgeText, Card, Heading, Text, VStack } from '@gluestack-ui/themed';
-import { type PropsWithChildren } from 'react';
-import { ScrollView } from 'react-native';
+import { type PropsWithChildren, type ReactNode } from 'react';
+import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { screenShellStyles as styles } from './screen-shell.styles';
 
 type ScreenShellProps = PropsWithChildren<{
+  description?: string;
   eyebrow: string;
+  floatingAction?: ReactNode;
   title: string;
-  description: string;
 }>;
 
 export function ScreenShell({
@@ -16,10 +17,17 @@ export function ScreenShell({
   eyebrow,
   title,
   description,
+  floatingAction,
 }: ScreenShellProps) {
   return (
     <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.scrollContent,
+          floatingAction ? styles.scrollContentWithFloatingAction : null,
+        ]}
+        keyboardShouldPersistTaps="handled"
+      >
         <VStack style={styles.stack}>
           <Card style={styles.heroCard}>
             <VStack style={styles.heroContent}>
@@ -27,13 +35,18 @@ export function ScreenShell({
                 <BadgeText style={styles.badgeText}>{eyebrow}</BadgeText>
               </Badge>
               <Heading style={styles.title}>{title}</Heading>
-              <Text style={styles.description}>{description}</Text>
+              {description ? <Text style={styles.description}>{description}</Text> : null}
             </VStack>
           </Card>
 
           {children}
         </VStack>
       </ScrollView>
+      {floatingAction ? (
+        <View pointerEvents="box-none" style={styles.floatingActionContainer}>
+          {floatingAction}
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 }

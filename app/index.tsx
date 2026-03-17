@@ -13,27 +13,15 @@ import {
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
-import { requestJson } from '../src/lib/api/client';
 import { ScreenShell } from '../src/components/layout/screen-shell';
 import { dashboardStyles as styles } from '../src/features/dashboard/dashboard.styles';
+import { getDashboardSnapshot } from '../src/features/dashboard/services/dashboard.service';
+import type { ProductSummary } from '../src/features/products/product.types';
+import type { StoreSummary } from '../src/features/stores/store.types';
 import { corporateTheme } from '../src/theme/corporate-theme';
 import { useNavigationStore } from '../src/store/navigation.store';
 
-type StoreSummary = {
-  address: string;
-  id: string;
-  name: string;
-  productCount: number;
-};
-
-type ProductSummary = {
-  category: string;
-  id: string;
-  name: string;
-  price: number;
-  storeId: string;
-};
-
+// ! Dashboard keeps only operational data visible.
 type DashboardStatus = 'error' | 'loading' | 'ready';
 
 function formatCurrency(value: number) {
@@ -61,7 +49,6 @@ function shortenAddress(address: string) {
 
 export default function HomeScreen() {
   const router = useRouter();
-  const lastVisitedModule = useNavigationStore((state) => state.lastVisitedModule);
   const setLastVisitedModule = useNavigationStore(
     (state) => state.setLastVisitedModule,
   );
@@ -76,18 +63,15 @@ export default function HomeScreen() {
     void loadDashboard();
   }, [setLastVisitedModule]);
 
+  // ! Home reads only live snapshot data exposed by the app service layer.
   async function loadDashboard() {
     try {
       setStatus('loading');
       setErrorMessage(null);
 
-      const [storesResponse, productsResponse] = await Promise.all([
-        requestJson<StoreSummary[]>('/stores'),
-        requestJson<ProductSummary[]>('/products'),
-      ]);
-
-      setStores(storesResponse);
-      setProducts(productsResponse);
+      const snapshot = await getDashboardSnapshot();
+      setStores(snapshot.stores);
+      setProducts(snapshot.products);
       setStatus('ready');
     } catch (error) {
       const message =
@@ -112,86 +96,43 @@ export default function HomeScreen() {
     .slice(0, 3);
 
   return (
-    <ScreenShell
-      eyebrow="Dashboard"
-      title="Centro de controle das filiais"
-      description="Acompanhe a operação, entre nas lojas mais relevantes e avance para os próximos cadastros sem sair da visão principal."
-    >
+    <ScreenShell eyebrow="Início" title="Dashboard">
       <VStack style={styles.content}>
-        <Card style={styles.signalCard}>
-          <VStack style={styles.signalContent}>
-            <HStack style={styles.signalHeader}>
-              <Badge style={styles.signalBadge}>
-                <BadgeText style={styles.signalBadgeText}>Operação</BadgeText>
-              </Badge>
-              <Badge style={styles.signalBadgeMuted}>
-                <BadgeText style={styles.signalBadgeMutedText}>
-                  Último módulo: {lastVisitedModule}
-                </BadgeText>
-              </Badge>
-            </HStack>
-
-            <Heading size="md" style={styles.signalTitle}>
-              Painel inicial focado em gestão de lojas e estoque
-            </Heading>
-
-            <Text style={styles.signalText}>
-              A ideia aqui não é vender produto, e sim dar visão rápida para quem
-              administra a rede: quantas filiais existem, como está o volume de itens
-              e quais unidades precisam de atenção primeiro.
-            </Text>
-          </VStack>
-        </Card>
-
         <VStack style={styles.metricGrid}>
           <Card style={styles.metricCardPrimary}>
             <VStack style={styles.metricContent}>
-              <Text style={styles.metricLabel}>Lojas cadastradas</Text>
+              <Text style={styles.metricLabel}>Lojas</Text>
               <Heading style={styles.metricValue}>{totalStores}</Heading>
-              <Text style={styles.metricHelper}>Base total de filiais da operação</Text>
             </VStack>
           </Card>
 
           <Card style={styles.metricCardSecondary}>
             <VStack style={styles.metricContent}>
-              <Text style={styles.metricLabelDark}>Produtos em catálogo</Text>
+              <Text style={styles.metricLabelDark}>Produtos</Text>
               <Heading style={styles.metricValueDark}>{totalProducts}</Heading>
-              <Text style={styles.metricHelperDark}>Itens somados entre todas as lojas</Text>
             </VStack>
           </Card>
 
           <Card style={styles.metricCardSecondary}>
             <VStack style={styles.metricContent}>
-              <Text style={styles.metricLabelDark}>Lojas com estoque</Text>
+              <Text style={styles.metricLabelDark}>Com estoque</Text>
               <Heading style={styles.metricValueDark}>{activeStores}</Heading>
-              <Text style={styles.metricHelperDark}>
-                Filiais com pelo menos um produto ativo
-              </Text>
             </VStack>
           </Card>
 
           <Card style={styles.metricCardAccent}>
             <VStack style={styles.metricContent}>
-              <Text style={styles.metricLabel}>Valor de referência</Text>
+              <Text style={styles.metricLabel}>Valor</Text>
               <Heading style={styles.metricValueAccent}>{formatCurrency(stockValue)}</Heading>
-              <Text style={styles.metricHelperAccent}>
-                Soma simples dos preços mockados no ambiente atual
-              </Text>
             </VStack>
           </Card>
         </VStack>
 
         <Card style={styles.actionsCard}>
           <VStack style={styles.sectionContent}>
-            <HStack style={styles.sectionHeader}>
-              <VStack style={styles.sectionCopy}>
-                <Text style={styles.sectionEyebrow}>Ações rápidas</Text>
-                <Heading size="md" style={styles.sectionTitle}>
-                  Próximos passos da operação
-                </Heading>
-              </VStack>
-              <Text style={styles.sectionAside}>Mobile first</Text>
-            </HStack>
+            <Heading size="md" style={styles.sectionTitle}>
+              Ações
+            </Heading>
 
             <VStack style={styles.buttonList}>
               <Button
@@ -223,10 +164,18 @@ export default function HomeScreen() {
 
         <Card style={styles.highlightCard}>
           <VStack style={styles.sectionContent}>
-            <Text style={styles.sectionEyebrow}>Destaque</Text>
-            <Heading size="md" style={styles.sectionTitle}>
-              Loja com maior concentração de itens
-            </Heading>
+            <HStack style={styles.sectionHeader}>
+              <Heading size="md" style={styles.sectionTitle}>
+                Destaque
+              </Heading>
+              {leadingStore ? (
+                <Badge style={styles.sectionBadge}>
+                  <BadgeText style={styles.sectionBadgeText}>
+                    {formatProductCount(leadingStore.productCount)}
+                  </BadgeText>
+                </Badge>
+              ) : null}
+            </HStack>
 
             {leadingStore ? (
               <VStack style={styles.leadStoreContent}>
@@ -255,10 +204,7 @@ export default function HomeScreen() {
                 </HStack>
               </VStack>
             ) : (
-              <Text style={styles.emptyStateText}>
-                Nenhuma loja foi cadastrada ainda. O dashboard já está pronto para
-                receber os dados assim que o CRUD começar.
-              </Text>
+              <Text style={styles.emptyStateText}>Nenhuma loja cadastrada.</Text>
             )}
           </VStack>
         </Card>
@@ -266,15 +212,14 @@ export default function HomeScreen() {
         <Card style={styles.rankingCard}>
           <VStack style={styles.sectionContent}>
             <HStack style={styles.sectionHeader}>
-              <VStack style={styles.sectionCopy}>
-                <Text style={styles.sectionEyebrow}>Ranking</Text>
-                <Heading size="md" style={styles.sectionTitle}>
-                  Lojas com mais produtos
-                </Heading>
-              </VStack>
-              <Text style={styles.sectionAside}>
-                {spotlightStores.length} em destaque
-              </Text>
+              <Heading size="md" style={styles.sectionTitle}>
+                Ranking
+              </Heading>
+              <Badge style={styles.sectionBadge}>
+                <BadgeText style={styles.sectionBadgeText}>
+                  {spotlightStores.length}
+                </BadgeText>
+              </Badge>
             </HStack>
 
             {status === 'loading' ? (
@@ -298,9 +243,7 @@ export default function HomeScreen() {
             ) : null}
 
             {status === 'ready' && spotlightStores.length === 0 ? (
-              <Text style={styles.emptyStateText}>
-                Ainda não existe ranking disponível porque nenhuma loja foi cadastrada.
-              </Text>
+              <Text style={styles.emptyStateText}>Nenhuma loja cadastrada.</Text>
             ) : null}
 
             {status === 'ready' ? (

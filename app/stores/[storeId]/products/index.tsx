@@ -1,4 +1,4 @@
-import { Button, ButtonText, Card, Heading, Text, VStack } from '@gluestack-ui/themed';
+import { Button, ButtonText, Card, Text, VStack } from '@gluestack-ui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
@@ -27,30 +27,11 @@ export default function ProductsScreen() {
   }, [setLastVisitedModule]);
 
   return (
-    <ScreenShell
-      eyebrow="Módulo de Produtos"
-      title="Estrutura inicial de produtos criada"
-      description="A rota dinâmica por loja já existe. No próximo passo, ela pode consumir o repositório e exibir os produtos vinculados à loja selecionada."
-    >
+    <ScreenShell eyebrow="Produtos" title="Produtos da Loja">
       <VStack style={styles.content}>
         <Card style={styles.card}>
           <VStack style={styles.cardContent}>
-            <Heading size="md" style={styles.cardTitle}>
-              Loja de referência
-            </Heading>
             <Text style={styles.cardText}>{resolvedStoreId}</Text>
-          </VStack>
-        </Card>
-
-        <Card style={styles.card}>
-          <VStack style={styles.cardContent}>
-            <Heading size="md" style={styles.cardTitle}>
-              Endpoints prontos
-            </Heading>
-            <Text style={styles.cardText}>
-              O mock já expõe rotas para consultar e manipular produtos por loja em
-              /stores/:storeId/products e /products.
-            </Text>
           </VStack>
         </Card>
 
@@ -85,10 +66,6 @@ const styles = StyleSheet.create({
     color: '#495057',
     fontSize: 15,
     lineHeight: 22,
-  },
-  cardTitle: {
-    color: '#1f2933',
-    fontSize: 18,
   },
   content: {
     gap: 16,

@@ -18,14 +18,10 @@ export default function NewProductScreen() {
   const resolvedStoreId = resolveParam(storeId);
 
   return (
-    <ScreenShell
-      eyebrow="Produtos"
-      title="Rota de novo produto reservada"
-      description="A organização da navegação já contempla o cadastro de produto por loja, mas sem formulário neste passo."
-    >
+    <ScreenShell eyebrow="Produtos" title="Novo Produto">
       <Card style={styles.card}>
         <VStack style={styles.content}>
-          <Text style={styles.text}>Loja selecionada: {resolvedStoreId}</Text>
+          <Text style={styles.text}>Loja: {resolvedStoreId}</Text>
 
           <Button style={styles.button} onPress={() => router.back()}>
             <ButtonText style={styles.buttonText}>Voltar</ButtonText>

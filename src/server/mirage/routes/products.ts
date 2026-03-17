@@ -4,16 +4,11 @@ import {
   createProductDtoSchema,
   updateProductDtoSchema,
 } from '../dto/product.dto';
-import {
-  createProduct,
-  deleteProduct,
-  getStore,
-  listProducts,
-  updateProduct,
-} from '../seeds/in-memory-db';
+import { mockRetailModel } from '../models/mock-retail.model';
 import { httpResponse } from '../utils/http-response';
 import { validateRequestBody } from '../utils/validate-request-body';
 
+// ! Product routes delegate persistence rules to the model layer.
 export function registerProductRoutes(server: Server) {
   server.get('/products', (_schema, request) => {
     const storeId =
@@ -21,7 +16,7 @@ export function registerProductRoutes(server: Server) {
         ? request.queryParams.storeId
         : undefined;
 
-    return httpResponse.ok(listProducts(storeId));
+    return httpResponse.ok(mockRetailModel.listProducts(storeId));
   });
 
   server.post('/products', (_schema, request) => {
@@ -35,11 +30,11 @@ export function registerProductRoutes(server: Server) {
       return validationResult.response;
     }
 
-    if (!getStore(validationResult.data.storeId)) {
+    if (!mockRetailModel.getStore(validationResult.data.storeId)) {
       return httpResponse.notFound('A loja informada não existe.');
     }
 
-    return httpResponse.created(createProduct(validationResult.data));
+    return httpResponse.created(mockRetailModel.createProduct(validationResult.data));
   });
 
   server.put('/products/:productId', (_schema, request) => {
@@ -59,7 +54,10 @@ export function registerProductRoutes(server: Server) {
       return validationResult.response;
     }
 
-    const nextProduct = updateProduct(productId, validationResult.data);
+    const nextProduct = mockRetailModel.updateProduct(
+      productId,
+      validationResult.data,
+    );
 
     if (!nextProduct) {
       return httpResponse.notFound('Produto não encontrado.');
@@ -75,7 +73,7 @@ export function registerProductRoutes(server: Server) {
       return httpResponse.notFound('Produto não encontrado.');
     }
 
-    const removed = deleteProduct(productId);
+    const removed = mockRetailModel.deleteProduct(productId);
 
     if (!removed) {
       return httpResponse.notFound('Produto não encontrado.');

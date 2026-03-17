@@ -130,27 +130,12 @@ export const dashboardStyles = StyleSheet.create({
     borderColor: corporateTheme.colors.border,
   },
   metricContent: {
-    gap: 10,
+    gap: 8,
   },
   metricGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 14,
-  },
-  metricHelper: {
-    color: '#D6E4F0',
-    fontSize: 13,
-    lineHeight: 20,
-  },
-  metricHelperAccent: {
-    color: '#DDEAF4',
-    fontSize: 13,
-    lineHeight: 20,
-  },
-  metricHelperDark: {
-    color: corporateTheme.colors.textSecondary,
-    fontSize: 13,
-    lineHeight: 20,
   },
   metricLabel: {
     color: '#D6E4F0',
@@ -220,6 +205,18 @@ export const dashboardStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
   },
+  sectionBadge: {
+    ...pillBase,
+    backgroundColor: corporateTheme.colors.brandSoft,
+    borderColor: corporateTheme.colors.brandMuted,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  sectionBadgeText: {
+    color: corporateTheme.colors.brandStrong,
+    fontSize: 12,
+    fontWeight: '700',
+  },
   secondaryButton: {
     backgroundColor: corporateTheme.colors.surface,
     borderColor: corporateTheme.colors.borderStrong,
@@ -232,85 +229,17 @@ export const dashboardStyles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
   },
-  sectionAside: {
-    backgroundColor: corporateTheme.colors.brandSoft,
-    borderColor: corporateTheme.colors.brandMuted,
-    borderRadius: 999,
-    borderWidth: 1,
-    color: corporateTheme.colors.brandStrong,
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.3,
-    overflow: 'hidden',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    textTransform: 'uppercase',
-  },
   sectionContent: {
-    gap: 18,
-  },
-  sectionCopy: {
-    flexShrink: 1,
-    gap: 6,
-  },
-  sectionEyebrow: {
-    color: corporateTheme.colors.brand,
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
+    gap: 16,
   },
   sectionHeader: {
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
+    alignItems: 'center',
     gap: 12,
     justifyContent: 'space-between',
   },
   sectionTitle: {
     color: corporateTheme.colors.textPrimary,
     lineHeight: 26,
-  },
-  signalBadge: {
-    ...pillBase,
-    backgroundColor: corporateTheme.colors.brandSoft,
-    borderColor: corporateTheme.colors.brandMuted,
-  },
-  signalBadgeMuted: {
-    ...pillBase,
-    backgroundColor: corporateTheme.colors.surface,
-    borderColor: corporateTheme.colors.border,
-  },
-  signalBadgeMutedText: {
-    color: corporateTheme.colors.textSecondary,
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  signalBadgeText: {
-    color: corporateTheme.colors.brandStrong,
-    fontSize: 12,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-  },
-  signalCard: {
-    ...cardBase,
-    backgroundColor: corporateTheme.colors.surfaceAlt,
-  },
-  signalContent: {
-    gap: 16,
-  },
-  signalHeader: {
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  signalText: {
-    color: corporateTheme.colors.textSecondary,
-    fontSize: 14,
-    lineHeight: 22,
-  },
-  signalTitle: {
-    color: corporateTheme.colors.textPrimary,
-    lineHeight: 30,
   },
   storeCard: {
     backgroundColor: corporateTheme.colors.surfaceAlt,

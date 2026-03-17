@@ -18,14 +18,10 @@ export default function EditStoreScreen() {
   const resolvedStoreId = resolveParam(storeId);
 
   return (
-    <ScreenShell
-      eyebrow="Lojas"
-      title="Rota de edição de loja reservada"
-      description="A estrutura de pastas já prevê a edição de uma loja específica, sem adiantar a implementação do formulário."
-    >
+    <ScreenShell eyebrow="Lojas" title="Editar Loja">
       <Card style={styles.card}>
         <VStack style={styles.content}>
-          <Text style={styles.text}>Loja selecionada: {resolvedStoreId}</Text>
+          <Text style={styles.text}>Loja: {resolvedStoreId}</Text>
 
           <Button style={styles.button} onPress={() => router.back()}>
             <ButtonText style={styles.buttonText}>Voltar</ButtonText>

@@ -23,15 +23,11 @@ export default function EditProductScreen() {
   const resolvedStoreId = resolveParam(storeId, 'unknown-store');
 
   return (
-    <ScreenShell
-      eyebrow="Produtos"
-      title="Rota de edição de produto reservada"
-      description="A rota dinâmica por loja e produto já está definida para a próxima etapa de implementação."
-    >
+    <ScreenShell eyebrow="Produtos" title="Editar Produto">
       <Card style={styles.card}>
         <VStack style={styles.content}>
-          <Text style={styles.text}>Loja selecionada: {resolvedStoreId}</Text>
-          <Text style={styles.text}>Produto selecionado: {resolvedProductId}</Text>
+          <Text style={styles.text}>Loja: {resolvedStoreId}</Text>
+          <Text style={styles.text}>Produto: {resolvedProductId}</Text>
 
           <Button style={styles.button} onPress={() => router.back()}>
             <ButtonText style={styles.buttonText}>Voltar</ButtonText>
