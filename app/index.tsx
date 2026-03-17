@@ -98,7 +98,6 @@ export default function HomeScreen() {
   const spotlightStores = [...stores]
     .sort((left, right) => right.productCount - left.productCount)
     .slice(0, 3);
-  const canManageProducts = totalStores > 0;
   const actionTiles = [
     {
       icon: StorefrontIcon,
@@ -124,31 +123,25 @@ export default function HomeScreen() {
     },
     {
       icon: SearchIcon,
-      isDisabled: !canManageProducts,
+      isDisabled: false,
       key: 'view-products',
       label: 'Ver produtos',
       onPress: () => {
-        if (!leadingStore) {
-          return;
-        }
-
+        // ! Product access stays top-level so the dashboard shortcut is always usable.
         setLastVisitedModule('products');
-        router.push(`/stores/${leadingStore.id}/products`);
+        router.push('/products');
       },
       variant: 'secondary' as const,
     },
     {
       icon: EditIcon,
-      isDisabled: !canManageProducts,
+      isDisabled: false,
       key: 'create-product',
       label: 'Novo produto',
       onPress: () => {
-        if (!leadingStore) {
-          return;
-        }
-
+        // ! Product creation starts by choosing a store instead of depending on the ranking card.
         setLastVisitedModule('products');
-        router.push(`/stores/${leadingStore.id}/products/new`);
+        router.push('/products/new');
       },
       variant: 'primary' as const,
     },

@@ -10,53 +10,62 @@ import {
   Text,
   VStack,
 } from '@gluestack-ui/themed';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
-import { FloatingActionButton } from '../../../../src/components/actions/floating-action-button';
-import { ScreenShell } from '../../../../src/components/layout/screen-shell';
-import { ProductListCard } from '../../../../src/features/products/components/product-list-card';
-import { productsScreenStyles as styles } from '../../../../src/features/products/products-screen.styles';
-import { productsService } from '../../../../src/features/products/services/products.service';
-import type { ProductSummary } from '../../../../src/features/products/product.types';
-import { corporateTheme } from '../../../../src/theme/corporate-theme';
-import { useNavigationStore } from '../../../../src/store/navigation.store';
+import { FloatingActionButton } from '../../src/components/actions/floating-action-button';
+import { ScreenShell } from '../../src/components/layout/screen-shell';
+import { ProductListCard } from '../../src/features/products/components/product-list-card';
+import { productsScreenStyles as styles } from '../../src/features/products/products-screen.styles';
+import { productsService } from '../../src/features/products/services/products.service';
+import type { ProductSummary } from '../../src/features/products/product.types';
+import { storesService } from '../../src/features/stores/services/stores.service';
+import type { StoreSummary } from '../../src/features/stores/store.types';
+import { corporateTheme } from '../../src/theme/corporate-theme';
+import { useNavigationStore } from '../../src/store/navigation.store';
 
-function resolveParam(param: string | string[] | undefined): string {
-  if (Array.isArray(param)) {
-    return param[0] ?? 'unknown-store';
-  }
+type ProductsCatalogStatus = 'error' | 'loading' | 'ready';
 
-  return param ?? 'unknown-store';
+function attachStoreName(
+  products: ProductSummary[],
+  stores: StoreSummary[],
+): ProductSummary[] {
+  const storeNameById = new Map(stores.map((store) => [store.id, store.name]));
+
+  return products.map((product) => ({
+    ...product,
+    storeName: storeNameById.get(product.storeId) ?? 'Loja indisponivel',
+  }));
 }
 
-type ProductsScreenStatus = 'error' | 'loading' | 'ready';
-
-// ! Products screen mirrors the stores list flow with store-scoped data.
-export default function ProductsScreen() {
+// ! The main products screen keeps the dashboard shortcut independent from a single store.
+export default function ProductsCatalogScreen() {
   const router = useRouter();
-  const { storeId } = useLocalSearchParams<{ storeId?: string | string[] }>();
-  const resolvedStoreId = resolveParam(storeId);
   const setLastVisitedModule = useNavigationStore(
     (state) => state.setLastVisitedModule,
   );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [products, setProducts] = useState<ProductSummary[]>([]);
-  const [status, setStatus] = useState<ProductsScreenStatus>('loading');
+  const [status, setStatus] = useState<ProductsCatalogStatus>('loading');
 
   useEffect(() => {
     setLastVisitedModule('products');
 
     void loadProducts();
-  }, [resolvedStoreId, setLastVisitedModule]);
+  }, [setLastVisitedModule]);
 
+  // ! Product cards also display the store name, so both sources are loaded together here.
   async function loadProducts() {
     try {
       setStatus('loading');
       setErrorMessage(null);
 
-      const nextProducts = await productsService.listByStore(resolvedStoreId);
-      setProducts(nextProducts);
+      const [nextProducts, stores] = await Promise.all([
+        productsService.list(),
+        storesService.list(),
+      ]);
+
+      setProducts(attachStoreName(nextProducts, stores));
       setStatus('ready');
     } catch (error) {
       const message =
@@ -75,7 +84,7 @@ export default function ProductsScreen() {
       floatingAction={
         <FloatingActionButton
           accessibilityLabel="Cadastrar produto"
-          onPress={() => router.push(`/stores/${resolvedStoreId}/products/new`)}
+          onPress={() => router.push('/products/new')}
         />
       }
       title="Produtos"

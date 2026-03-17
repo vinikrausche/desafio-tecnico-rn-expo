@@ -1,12 +1,11 @@
-import { Button, ButtonText, Card, Text, VStack } from '@gluestack-ui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
 
 import { ScreenShell } from '../../../../src/components/layout/screen-shell';
-import {
-  centeredButtonStyle,
-  centeredButtonTextStyle,
-} from '../../../../src/theme/button-presets';
+import { ProductForm } from '../../../../src/features/products/components/product-form';
+import { useCreateProductForm } from '../../../../src/features/products/hooks/use-create-product-form';
+import { productsService } from '../../../../src/features/products/services/products.service';
+import { useNavigationStore } from '../../../../src/store/navigation.store';
 
 function resolveParam(param: string | string[] | undefined): string {
   if (Array.isArray(param)) {
@@ -16,50 +15,60 @@ function resolveParam(param: string | string[] | undefined): string {
   return param ?? 'unknown-store';
 }
 
-export default function NewProductScreen() {
+// ! The store-scoped route reuses the same form model but keeps the store binding fixed.
+export default function StoreProductCreationScreen() {
   const router = useRouter();
   const { storeId } = useLocalSearchParams<{ storeId?: string | string[] }>();
   const resolvedStoreId = resolveParam(storeId);
+  const setLastVisitedModule = useNavigationStore(
+    (state) => state.setLastVisitedModule,
+  );
+  const { errors, formValues, getPayload, setFormError, syncStoreId, updateField } =
+    useCreateProductForm(resolvedStoreId);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setLastVisitedModule('products');
+  }, [setLastVisitedModule]);
+
+  useEffect(() => {
+    syncStoreId(resolvedStoreId);
+  }, [resolvedStoreId, syncStoreId]);
+
+  async function handleSubmit() {
+    const payload = getPayload();
+
+    if (!payload) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      await productsService.create(payload);
+      router.replace(`/stores/${resolvedStoreId}/products`);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Nao foi possivel salvar o produto.';
+
+      setFormError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <ScreenShell eyebrow="Produtos" title="Novo Produto">
-      <Card style={styles.card}>
-        <VStack style={styles.content}>
-          <Text style={styles.text}>Loja: {resolvedStoreId}</Text>
-
-          <Button style={styles.button} onPress={() => router.back()}>
-            <ButtonText style={styles.buttonText}>Voltar</ButtonText>
-          </Button>
-        </VStack>
-      </Card>
+      <ProductForm
+        errors={errors}
+        formValues={formValues}
+        isStoreEditable={false}
+        isSubmitting={isSubmitting}
+        onCancel={() => router.back()}
+        onFieldChange={updateField}
+        onStoreSelect={syncStoreId}
+        onSubmit={handleSubmit}
+      />
     </ScreenShell>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    ...centeredButtonStyle,
-    backgroundColor: '#4c6b57',
-    minHeight: 52,
-  },
-  buttonText: {
-    ...centeredButtonTextStyle,
-    color: '#f8f4ec',
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    borderColor: '#d9d4ca',
-    borderWidth: 1,
-    padding: 18,
-  },
-  content: {
-    gap: 16,
-  },
-  text: {
-    color: '#495057',
-    fontSize: 15,
-    lineHeight: 22,
-  },
-});

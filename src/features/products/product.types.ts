@@ -5,4 +5,12 @@ export type ProductSummary = {
   name: string;
   price: number;
   storeId: string;
+  storeName?: string;
+};
+
+export type CreateProductInput = {
+  category: string;
+  name: string;
+  price: number;
+  storeId: string;
 };
