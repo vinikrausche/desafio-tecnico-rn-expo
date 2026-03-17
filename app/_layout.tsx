@@ -3,6 +3,7 @@ import 'react-native-gesture-handler';
 import { Stack } from 'expo-router';
 
 import { AppProvider } from '../src/providers/app-provider';
+import { corporateTheme } from '../src/theme/corporate-theme';
 
 export default function RootLayout() {
   return (
@@ -11,11 +12,11 @@ export default function RootLayout() {
         screenOptions={{
           headerShadowVisible: false,
           headerStyle: {
-            backgroundColor: '#163020',
+            backgroundColor: corporateTheme.colors.brandStrong,
           },
-          headerTintColor: '#f5efe6',
+          headerTintColor: corporateTheme.colors.textInverse,
           contentStyle: {
-            backgroundColor: '#f5efe6',
+            backgroundColor: corporateTheme.colors.background,
           },
         }}
       >
