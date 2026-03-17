@@ -1,6 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
 
 export type NavigationModule = 'home' | 'stores' | 'products';
 
@@ -9,15 +7,9 @@ type NavigationStore = {
   setLastVisitedModule: (module: NavigationModule) => void;
 };
 
-export const useNavigationStore = create<NavigationStore>()(
-  persist(
-    (set) => ({
-      lastVisitedModule: 'home',
-      setLastVisitedModule: (module) => set({ lastVisitedModule: module }),
-    }),
-    {
-      name: 'retail-hub-navigation',
-      storage: createJSONStorage(() => AsyncStorage),
-    },
-  ),
-);
+// ! A navegacao usa estado global simples; persistencia nao e critica para o fluxo
+// ! e a versao web fica mais estavel sem o middleware de storage do Zustand.
+export const useNavigationStore = create<NavigationStore>((set) => ({
+  lastVisitedModule: 'home',
+  setLastVisitedModule: (module) => set({ lastVisitedModule: module }),
+}));

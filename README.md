@@ -4,7 +4,9 @@ Aplicativo mobile desenvolvido em React Native com Expo para centralizar o cadas
 
 ## Stack e versões
 
-- Node recomendado para build e CI: `>= 20.19.4`
+- Node recomendado para desenvolvimento, build e CI: `>= 20.19.4`
+- arquivo `.nvmrc` incluído com `20.19.4`
+- campo `engines.node` configurado no `package.json`
 - Expo: `~55.0.6`
 - React: `19.2.0`
 - React Native: `0.83.2`
@@ -25,9 +27,9 @@ Aplicativo mobile desenvolvido em React Native com Expo para centralizar o cadas
 - Mock de API com MirageJS usando endpoints para `/stores` e `/products`
 - Navegação com Expo Router
 - Interface construída com Gluestack UI e tema visual corporativo
-- Suíte inicial de testes unitários com Jest
+- Testes unitários e de interface com Jest + Testing Library React Native
 - ESLint + Prettier configurados para manter padrão de código
-- Pipeline de CI com GitHub Actions para validar tipos, testes e build web em pull requests
+- Pipeline de CI com GitHub Actions para validar lint, formatação, tipos, testes e build web em `push` na `main` e em `pull_request`
 
 ## Fluxo de dados
 
@@ -51,6 +53,13 @@ npm install
 ## Execução
 
 ```bash
+nvm use
+npx expo start
+```
+
+ou
+
+```bash
 npm run start
 ```
 
@@ -68,6 +77,26 @@ npm run web
 npm run test
 npm run test:ci
 ```
+
+Cobertura atual de interface:
+
+- cards de loja e produto
+- formulário de loja
+- formulário de produto
+
+## Prints
+
+### Dashboard
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+### Lojas
+
+![Lojas](docs/screenshots/stores.png)
+
+### Produtos vinculados
+
+![Produtos](docs/screenshots/products.png)
 
 ## Qualidade de codigo
 
@@ -168,6 +197,5 @@ Validações da pipeline:
 Os itens abaixo podem ser adicionados depois, mas não são necessários para executar a versão atual:
 
 - busca e filtro de lojas e produtos
-- testes de interface com Testing Library React Native
 - persistência offline com AsyncStorage
-- prints e link de publicação com Expo
+- publicação com Expo

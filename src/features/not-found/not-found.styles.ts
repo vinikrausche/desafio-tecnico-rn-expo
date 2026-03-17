@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import {
   centeredButtonStyle,
   centeredButtonTextStyle,
-} from '../src/theme/button-presets';
+} from '../../theme/button-presets';
 
 export const notFoundScreenStyles = StyleSheet.create({
   button: {

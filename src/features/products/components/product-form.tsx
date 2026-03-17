@@ -35,7 +35,7 @@ type ProductFormProps = {
   submitLabel?: string;
 };
 
-// ! The shared form keeps product creation consistent across the general and store-scoped flows.
+// ! O formulario compartilhado mantém o cadastro consistente nos fluxos geral e por loja.
 export function ProductForm({
   errors,
   formValues,

@@ -2,7 +2,7 @@ import { Button, ButtonText, Card, Text, VStack } from '@gluestack-ui/themed';
 import { Link } from 'expo-router';
 
 import { ScreenShell } from '../src/components/layout/screen-shell';
-import { notFoundScreenStyles as styles } from './+not-found.styles';
+import { notFoundScreenStyles as styles } from '../src/features/not-found/not-found.styles';
 
 export default function NotFoundScreen() {
   return (
