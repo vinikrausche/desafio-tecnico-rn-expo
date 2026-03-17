@@ -1,11 +1,9 @@
-import { HttpResponse, http } from 'msw';
+import { Response, type Request, type Server } from 'miragejs';
 
 import type {
   CreateProductPayload,
   UpdateProductPayload,
 } from '../../../features/products/types/product';
-import { API_BASE_URL } from '../../../lib/api/constants';
-import type { MockRouteParam } from '../types';
 import {
   createProduct,
   deleteProduct,
@@ -14,16 +12,16 @@ import {
   updateProduct,
 } from '../seeds/in-memory-db';
 
-function getSingleParam(value: MockRouteParam): string | null {
-  if (typeof value === 'string') {
-    return value;
+function parseRequestBody<T>(request: Request): T | null {
+  if (!request.requestBody) {
+    return null;
   }
 
-  if (Array.isArray(value)) {
-    return value[0] ?? null;
+  try {
+    return JSON.parse(request.requestBody) as T;
+  } catch {
+    return null;
   }
-
-  return null;
 }
 
 function hasValidCategory(payload: Record<string, unknown>): boolean {
@@ -69,83 +67,72 @@ function isUpdateProductPayload(payload: unknown): payload is UpdateProductPaylo
   );
 }
 
-export const productHandlers = [
-  http.get(`${API_BASE_URL}/products`, ({ request }) => {
-    const url = new URL(request.url);
-    const storeId = url.searchParams.get('storeId') ?? undefined;
+function notFound(message: string) {
+  return new Response(404, {}, { message });
+}
 
-    return HttpResponse.json(listProducts(storeId));
-  }),
+function badRequest(message: string) {
+  return new Response(400, {}, { message });
+}
 
-  http.post(`${API_BASE_URL}/products`, async ({ request }) => {
-    const payload = await request.json();
+export function registerProductRoutes(server: Server) {
+  server.get('/products', (_schema, request) => {
+    const storeId =
+      typeof request.queryParams.storeId === 'string'
+        ? request.queryParams.storeId
+        : undefined;
+
+    return listProducts(storeId);
+  });
+
+  server.post('/products', (_schema, request) => {
+    const payload = parseRequestBody<CreateProductPayload>(request);
 
     if (!isCreateProductPayload(payload)) {
-      return HttpResponse.json(
-        { message: 'Payload inválido para criação de produto.' },
-        { status: 400 },
-      );
+      return badRequest('Payload inválido para criação de produto.');
     }
 
     if (!getStore(payload.storeId)) {
-      return HttpResponse.json(
-        { message: 'A loja informada não existe.' },
-        { status: 404 },
-      );
+      return notFound('A loja informada não existe.');
     }
 
-    return HttpResponse.json(createProduct(payload), { status: 201 });
-  }),
+    return createProduct(payload);
+  });
 
-  http.put(`${API_BASE_URL}/products/:productId`, async ({ params, request }) => {
-    const payload = await request.json();
-    const productId = getSingleParam(params.productId);
+  server.put('/products/:productId', (_schema, request) => {
+    const payload = parseRequestBody<UpdateProductPayload>(request);
+    const productId = request.params.productId;
 
     if (!productId) {
-      return HttpResponse.json(
-        { message: 'Produto não encontrado.' },
-        { status: 404 },
-      );
+      return notFound('Produto não encontrado.');
     }
 
     if (!isUpdateProductPayload(payload)) {
-      return HttpResponse.json(
-        { message: 'Payload inválido para atualização de produto.' },
-        { status: 400 },
-      );
+      return badRequest('Payload inválido para atualização de produto.');
     }
 
     const nextProduct = updateProduct(productId, payload);
 
     if (!nextProduct) {
-      return HttpResponse.json(
-        { message: 'Produto não encontrado.' },
-        { status: 404 },
-      );
+      return notFound('Produto não encontrado.');
     }
 
-    return HttpResponse.json(nextProduct);
-  }),
+    return nextProduct;
+  });
 
-  http.delete(`${API_BASE_URL}/products/:productId`, ({ params }) => {
-    const productId = getSingleParam(params.productId);
+  server.delete('/products/:productId', (_schema, request) => {
+    const productId = request.params.productId;
 
     if (!productId) {
-      return HttpResponse.json(
-        { message: 'Produto não encontrado.' },
-        { status: 404 },
-      );
+      return notFound('Produto não encontrado.');
     }
 
     const removed = deleteProduct(productId);
 
     if (!removed) {
-      return HttpResponse.json(
-        { message: 'Produto não encontrado.' },
-        { status: 404 },
-      );
+      return notFound('Produto não encontrado.');
     }
 
-    return new HttpResponse(null, { status: 204 });
-  }),
-];
+    return new Response(204);
+  });
+}

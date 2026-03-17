@@ -1,4 +1,9 @@
-import { productHandlers } from './products';
-import { storeHandlers } from './stores';
+import type { Server } from 'miragejs';
 
-export const handlers = [...storeHandlers, ...productHandlers];
+import { registerProductRoutes } from './products';
+import { registerStoreRoutes } from './stores';
+
+export function handlers(server: Server) {
+  registerStoreRoutes(server);
+  registerProductRoutes(server);
+}

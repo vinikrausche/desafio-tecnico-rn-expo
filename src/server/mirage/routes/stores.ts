@@ -1,11 +1,9 @@
-import { HttpResponse, http } from 'msw';
+import { Response, type Request, type Server } from 'miragejs';
 
 import type {
   CreateStorePayload,
   UpdateStorePayload,
 } from '../../../features/stores/types/store';
-import { API_BASE_URL } from '../../../lib/api/constants';
-import type { MockRouteParam } from '../types';
 import {
   createStore,
   deleteStore,
@@ -15,16 +13,16 @@ import {
   updateStore,
 } from '../seeds/in-memory-db';
 
-function getSingleParam(value: MockRouteParam): string | null {
-  if (typeof value === 'string') {
-    return value;
+function parseRequestBody<T>(request: Request): T | null {
+  if (!request.requestBody) {
+    return null;
   }
 
-  if (Array.isArray(value)) {
-    return value[0] ?? null;
+  try {
+    return JSON.parse(request.requestBody) as T;
+  } catch {
+    return null;
   }
-
-  return null;
 }
 
 function isStorePayload(
@@ -44,77 +42,79 @@ function isStorePayload(
   );
 }
 
-export const storeHandlers = [
-  http.get(`${API_BASE_URL}/stores`, () => {
-    return HttpResponse.json(listStores());
-  }),
+function notFound(message: string) {
+  return new Response(404, {}, { message });
+}
 
-  http.post(`${API_BASE_URL}/stores`, async ({ request }) => {
-    const payload = await request.json();
+function badRequest(message: string) {
+  return new Response(400, {}, { message });
+}
+
+export function registerStoreRoutes(server: Server) {
+  server.get('/stores', () => {
+    return listStores();
+  });
+
+  server.post('/stores', (_schema, request) => {
+    const payload = parseRequestBody<CreateStorePayload>(request);
 
     if (!isStorePayload(payload)) {
-      return HttpResponse.json(
-        { message: 'Payload inválido para criação de loja.' },
-        { status: 400 },
-      );
+      return badRequest('Payload inválido para criação de loja.');
     }
 
-    return HttpResponse.json(createStore(payload), { status: 201 });
-  }),
+    return createStore(payload);
+  });
 
-  http.put(`${API_BASE_URL}/stores/:storeId`, async ({ params, request }) => {
-    const payload = await request.json();
-    const storeId = getSingleParam(params.storeId);
+  server.put('/stores/:storeId', (_schema, request) => {
+    const payload = parseRequestBody<UpdateStorePayload>(request);
+    const storeId = request.params.storeId;
+
+    if (!isStorePayload(payload)) {
+      return badRequest('Payload inválido para atualização de loja.');
+    }
 
     if (!storeId) {
-      return HttpResponse.json({ message: 'Loja não encontrada.' }, { status: 404 });
-    }
-
-    if (!isStorePayload(payload)) {
-      return HttpResponse.json(
-        { message: 'Payload inválido para atualização de loja.' },
-        { status: 400 },
-      );
+      return notFound('Loja não encontrada.');
     }
 
     const nextStore = updateStore(storeId, payload);
 
     if (!nextStore) {
-      return HttpResponse.json({ message: 'Loja não encontrada.' }, { status: 404 });
+      return notFound('Loja não encontrada.');
     }
 
-    return HttpResponse.json(nextStore);
-  }),
+    return nextStore;
+  });
 
-  http.delete(`${API_BASE_URL}/stores/:storeId`, ({ params }) => {
-    const storeId = getSingleParam(params.storeId);
+  server.delete('/stores/:storeId', (_schema, request) => {
+    const storeId = request.params.storeId;
 
     if (!storeId) {
-      return HttpResponse.json({ message: 'Loja não encontrada.' }, { status: 404 });
+      return notFound('Loja não encontrada.');
     }
 
     const removed = deleteStore(storeId);
 
     if (!removed) {
-      return HttpResponse.json({ message: 'Loja não encontrada.' }, { status: 404 });
+      return notFound('Loja não encontrada.');
     }
 
-    return new HttpResponse(null, { status: 204 });
-  }),
+    return new Response(204);
+  });
 
-  http.get(`${API_BASE_URL}/stores/:storeId/products`, ({ params }) => {
-    const storeId = getSingleParam(params.storeId);
+  server.get('/stores/:storeId/products', (_schema, request) => {
+    const storeId = request.params.storeId;
 
     if (!storeId) {
-      return HttpResponse.json({ message: 'Loja não encontrada.' }, { status: 404 });
+      return notFound('Loja não encontrada.');
     }
 
     const store = getStore(storeId);
 
     if (!store) {
-      return HttpResponse.json({ message: 'Loja não encontrada.' }, { status: 404 });
+      return notFound('Loja não encontrada.');
     }
 
-    return HttpResponse.json(listProducts(storeId));
-  }),
-];
+    return listProducts(storeId);
+  });
+}

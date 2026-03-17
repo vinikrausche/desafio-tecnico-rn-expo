@@ -12,7 +12,7 @@ Scaffold inicial do desafio técnico em React Native com Expo. A base foi criada
 - Expo Router: `~55.0.5`
 - Gluestack UI: `@gluestack-ui/themed ^1.1.73`
 - Zustand: `^5.0.12`
-- MSW: `^2.12.11`
+- MirageJS: `^0.1.48`
 
 ## O que já está pronto
 
@@ -20,7 +20,7 @@ Scaffold inicial do desafio técnico em React Native com Expo. A base foi criada
 - Navegação com Expo Router
 - Provider global com Gluestack UI
 - Estado inicial com Zustand e persistência base via AsyncStorage
-- Mock API local com endpoints simulados para `/stores` e `/products`
+- Mock API local com MirageJS e endpoints simulados para `/stores` e `/products`
 - Estrutura de pastas preparada para evoluir os módulos de lojas e produtos
 
 ## O que ainda não foi feito
@@ -55,9 +55,8 @@ npm run web
 
 Nenhum processo separado é necessário neste scaffold.
 
-- Em ambiente de desenvolvimento, o app inicializa automaticamente a camada de mock ao subir.
+- Em ambiente de desenvolvimento, o app inicializa automaticamente o MirageJS ao subir.
 - A organização do mock fica em `src/server/mirage`.
-- Neste passo, a implementação interna do scaffold continua usando MSW, mas já foi isolada na estrutura que vai receber a migração para MirageJS.
 
 Endpoints preparados:
 

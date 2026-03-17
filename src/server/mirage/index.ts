@@ -1,23 +1,38 @@
 import 'react-native-url-polyfill/auto';
 
-import { setupServer } from 'msw/native';
+import { createServer, type Server } from 'miragejs';
 
+import { API_BASE_URL } from '../../lib/api/constants';
 import { handlers } from './routes';
+import { resetMockDb } from './seeds/in-memory-db';
 
-const server = setupServer(...handlers);
-
-let isRunning = false;
-
-export async function startMockServer() {
-  if (isRunning) {
-    return;
-  }
-
-  server.listen({
-    onUnhandledRequest: 'bypass',
-  });
-
-  isRunning = true;
+declare global {
+  var __mirageServer__: Server | undefined;
 }
 
-export { server };
+function makeServer() {
+  resetMockDb();
+
+  return createServer({
+    environment: 'development',
+    routes() {
+      this.timing = 0;
+      this.urlPrefix = API_BASE_URL;
+
+      handlers(this);
+    },
+  });
+}
+
+export async function startMockServer() {
+  if (!globalThis.__mirageServer__) {
+    globalThis.__mirageServer__ = makeServer();
+  }
+
+  return globalThis.__mirageServer__;
+}
+
+export function stopMockServer() {
+  globalThis.__mirageServer__?.shutdown();
+  globalThis.__mirageServer__ = undefined;
+}
