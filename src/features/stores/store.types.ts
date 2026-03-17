@@ -10,3 +10,5 @@ export type CreateStoreInput = {
   address: string;
   name: string;
 };
+
+export type UpdateStoreInput = CreateStoreInput;

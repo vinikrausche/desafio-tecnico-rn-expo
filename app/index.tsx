@@ -14,19 +14,15 @@ import {
   VStack,
 } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { ScreenShell } from '../src/components/layout/screen-shell';
 import { StorefrontIcon } from '../src/components/icons/storefront-icon';
 import { dashboardStyles as styles } from '../src/features/dashboard/dashboard.styles';
-import { getDashboardSnapshot } from '../src/features/dashboard/services/dashboard.service';
-import type { ProductSummary } from '../src/features/products/product.types';
-import type { StoreSummary } from '../src/features/stores/store.types';
 import { corporateTheme } from '../src/theme/corporate-theme';
 import { useNavigationStore } from '../src/store/navigation.store';
-
-// ! Dashboard keeps only operational data visible.
-type DashboardStatus = 'error' | 'loading' | 'ready';
+import { useProductZustand } from '../src/zustand/product';
+import { useStoreZustand } from '../src/zustand/store';
 
 function formatCurrency(value: number) {
   const [integer, decimal] = value.toFixed(2).split('.');
@@ -53,40 +49,40 @@ function shortenAddress(address: string) {
 
 export default function HomeScreen() {
   const router = useRouter();
+  const catalogErrorMessage = useProductZustand((state) => state.catalogErrorMessage);
+  const catalogStatus = useProductZustand((state) => state.catalogStatus);
+  const loadCatalog = useProductZustand((state) => state.loadCatalog);
+  const productIds = useProductZustand((state) => state.productIds);
+  const productsById = useProductZustand((state) => state.productsById);
   const setLastVisitedModule = useNavigationStore(
     (state) => state.setLastVisitedModule,
   );
-  const [status, setStatus] = useState<DashboardStatus>('loading');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [products, setProducts] = useState<ProductSummary[]>([]);
-  const [stores, setStores] = useState<StoreSummary[]>([]);
+  const loadStores = useStoreZustand((state) => state.loadStores);
+  const storeIds = useStoreZustand((state) => state.storeIds);
+  const storesById = useStoreZustand((state) => state.storesById);
+  const storesErrorMessage = useStoreZustand((state) => state.errorMessage);
+  const storesStatus = useStoreZustand((state) => state.status);
 
   useEffect(() => {
     setLastVisitedModule('home');
 
-    void loadDashboard();
-  }, [setLastVisitedModule]);
+    void Promise.all([loadStores(), loadCatalog()]);
+  }, [loadCatalog, loadStores, setLastVisitedModule]);
 
-  // ! Home reads only live snapshot data exposed by the app service layer.
-  async function loadDashboard() {
-    try {
-      setStatus('loading');
-      setErrorMessage(null);
-
-      const snapshot = await getDashboardSnapshot();
-      setStores(snapshot.stores);
-      setProducts(snapshot.products);
-      setStatus('ready');
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível carregar o resumo da operação.';
-
-      setErrorMessage(message);
-      setStatus('error');
-    }
-  }
+  const products = useMemo(
+    () =>
+      productIds
+        .map((productId) => productsById[productId])
+        .filter((product): product is NonNullable<typeof product> => Boolean(product)),
+    [productIds, productsById],
+  );
+  const stores = useMemo(
+    () =>
+      storeIds
+        .map((storeId) => storesById[storeId])
+        .filter((store): store is NonNullable<typeof store> => Boolean(store)),
+    [storeIds, storesById],
+  );
 
   const totalStores = stores.length;
   const totalProducts = products.length;
@@ -98,6 +94,15 @@ export default function HomeScreen() {
   const spotlightStores = [...stores]
     .sort((left, right) => right.productCount - left.productCount)
     .slice(0, 3);
+  const dashboardErrorMessage = storesErrorMessage ?? catalogErrorMessage;
+  const hasDashboardError =
+    storesStatus === 'error' || catalogStatus === 'error';
+  const isLoadingDashboard =
+    storesStatus === 'idle' ||
+    storesStatus === 'loading' ||
+    catalogStatus === 'idle' ||
+    catalogStatus === 'loading';
+  const isDashboardReady = !isLoadingDashboard && !hasDashboardError;
   const actionTiles = [
     {
       icon: StorefrontIcon,
@@ -295,31 +300,34 @@ export default function HomeScreen() {
               </Badge>
             </HStack>
 
-            {status === 'loading' ? (
+            {isLoadingDashboard ? (
               <HStack style={styles.loadingRow}>
                 <Spinner size="large" color={corporateTheme.colors.brand} />
                 <Text style={styles.loadingText}>Carregando visão resumida...</Text>
               </HStack>
             ) : null}
 
-            {status === 'error' ? (
+            {hasDashboardError ? (
               <VStack style={styles.feedbackBlock}>
                 <Text style={styles.feedbackTitle}>Falha ao carregar o dashboard</Text>
                 <Text style={styles.feedbackText}>
-                  {errorMessage ?? 'O mock não respondeu como esperado.'}
+                  {dashboardErrorMessage ?? 'O mock não respondeu como esperado.'}
                 </Text>
 
-                <Button style={styles.retryButton} onPress={() => void loadDashboard()}>
+                <Button
+                  style={styles.retryButton}
+                  onPress={() => void Promise.all([loadStores({ force: true }), loadCatalog({ force: true })])}
+                >
                   <Text style={styles.retryButtonText}>Tentar novamente</Text>
                 </Button>
               </VStack>
             ) : null}
 
-            {status === 'ready' && spotlightStores.length === 0 ? (
+            {isDashboardReady && spotlightStores.length === 0 ? (
               <Text style={styles.emptyStateText}>Nenhuma loja cadastrada.</Text>
             ) : null}
 
-            {status === 'ready' ? (
+            {isDashboardReady ? (
               <VStack style={styles.storeList}>
                 {spotlightStores.map((store, index) => (
                   <Card key={store.id} style={styles.storeCard}>

@@ -14,3 +14,5 @@ export type CreateProductInput = {
   price: number;
   storeId: string;
 };
+
+export type UpdateProductInput = Omit<CreateProductInput, 'storeId'>;

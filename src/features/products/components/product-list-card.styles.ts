@@ -1,8 +1,17 @@
 import { StyleSheet } from 'react-native';
 
+import {
+  centeredButtonStyle,
+  centeredButtonTextStyle,
+} from '../../../theme/button-presets';
 import { corporateShadows, corporateTheme } from '../../../theme/corporate-theme';
 
 export const productListCardStyles = StyleSheet.create({
+  actionsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    width: '100%',
+  },
   badge: {
     alignSelf: 'flex-start',
     backgroundColor: corporateTheme.colors.brandSoft,
@@ -28,6 +37,21 @@ export const productListCardStyles = StyleSheet.create({
   content: {
     gap: 12,
   },
+  dangerActionButton: {
+    ...centeredButtonStyle,
+    backgroundColor: corporateTheme.colors.errorSoft,
+    borderColor: corporateTheme.colors.errorBorder,
+    borderRadius: 16,
+    borderWidth: 1,
+    flex: 1,
+    minHeight: 42,
+  },
+  dangerActionButtonText: {
+    ...centeredButtonTextStyle,
+    color: corporateTheme.colors.error,
+    fontSize: 13,
+    fontWeight: '700',
+  },
   footer: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -45,6 +69,21 @@ export const productListCardStyles = StyleSheet.create({
     color: corporateTheme.colors.textSecondary,
     fontSize: 14,
     lineHeight: 20,
+  },
+  secondaryActionButton: {
+    ...centeredButtonStyle,
+    backgroundColor: corporateTheme.colors.surfaceAlt,
+    borderColor: corporateTheme.colors.borderStrong,
+    borderRadius: 16,
+    borderWidth: 1,
+    flex: 1,
+    minHeight: 42,
+  },
+  secondaryActionButtonText: {
+    ...centeredButtonTextStyle,
+    color: corporateTheme.colors.brandStrong,
+    fontSize: 13,
+    fontWeight: '700',
   },
   title: {
     color: corporateTheme.colors.textPrimary,

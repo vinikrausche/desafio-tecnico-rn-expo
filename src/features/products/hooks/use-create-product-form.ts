@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 
 import {
   buildCreateProductInput,
+  buildUpdateProductInput,
   createInitialProductFormValues,
   type CreateProductFormErrors,
   type CreateProductFormField,
@@ -47,8 +48,28 @@ export function useCreateProductForm(defaultStoreId = '') {
     clearFieldError('storeId');
   }, [clearFieldError]);
 
+  const replaceFormValues = useCallback((values: Partial<CreateProductFormValues>) => {
+    setFormValues((current) => ({
+      ...current,
+      ...values,
+    }));
+
+    setErrors({});
+  }, []);
+
   const getPayload = useCallback(() => {
     const result = buildCreateProductInput(formValues);
+
+    if (!result.success) {
+      setErrors(result.errors);
+      return null;
+    }
+
+    return result.data;
+  }, [formValues]);
+
+  const getUpdatePayload = useCallback(() => {
+    const result = buildUpdateProductInput(formValues);
 
     if (!result.success) {
       setErrors(result.errors);
@@ -62,6 +83,8 @@ export function useCreateProductForm(defaultStoreId = '') {
     errors,
     formValues,
     getPayload,
+    getUpdatePayload,
+    replaceFormValues,
     setFormError,
     syncStoreId,
     updateField,

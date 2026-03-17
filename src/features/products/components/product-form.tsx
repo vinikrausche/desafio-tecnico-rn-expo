@@ -32,6 +32,7 @@ type ProductFormProps = {
   onStoreSelect: (storeId: string) => void;
   onSubmit: () => void;
   storeOptions?: ProductStoreOption[];
+  submitLabel?: string;
 };
 
 // ! The shared form keeps product creation consistent across the general and store-scoped flows.
@@ -46,6 +47,7 @@ export function ProductForm({
   onStoreSelect,
   onSubmit,
   storeOptions = [],
+  submitLabel = 'Salvar produto',
 }: ProductFormProps) {
   const shouldShowStoreField = isStoreEditable;
 
@@ -153,7 +155,7 @@ export function ProductForm({
             style={styles.primaryButton}
           >
             <ButtonText style={styles.primaryButtonText}>
-              {isSubmitting ? 'Salvando...' : 'Salvar produto'}
+              {isSubmitting ? 'Salvando...' : submitLabel}
             </ButtonText>
           </Button>
 

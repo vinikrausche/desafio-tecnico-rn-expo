@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { ScreenShell } from '../../../../src/components/layout/screen-shell';
 import { ProductForm } from '../../../../src/features/products/components/product-form';
 import { useCreateProductForm } from '../../../../src/features/products/hooks/use-create-product-form';
-import { productsService } from '../../../../src/features/products/services/products.service';
 import { useNavigationStore } from '../../../../src/store/navigation.store';
+import { useProductZustand } from '../../../../src/zustand/product';
 
 function resolveParam(param: string | string[] | undefined): string {
   if (Array.isArray(param)) {
@@ -18,6 +18,7 @@ function resolveParam(param: string | string[] | undefined): string {
 // ! The store-scoped route reuses the same form model but keeps the store binding fixed.
 export default function StoreProductCreationScreen() {
   const router = useRouter();
+  const createProduct = useProductZustand((state) => state.createProduct);
   const { storeId } = useLocalSearchParams<{ storeId?: string | string[] }>();
   const resolvedStoreId = resolveParam(storeId);
   const setLastVisitedModule = useNavigationStore(
@@ -45,7 +46,7 @@ export default function StoreProductCreationScreen() {
     try {
       setIsSubmitting(true);
 
-      await productsService.create(payload);
+      await createProduct(payload);
       router.replace(`/stores/${resolvedStoreId}/products`);
     } catch (error) {
       const message =

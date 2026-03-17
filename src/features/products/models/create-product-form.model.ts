@@ -29,12 +29,13 @@ type BuildCreateProductInputResult =
 
 export function createInitialProductFormValues(
   storeId = '',
+  values: Partial<CreateProductFormValues> = {},
 ): CreateProductFormValues {
   return {
-    category: '',
-    name: '',
-    price: '',
-    storeId,
+    category: values.category ?? '',
+    name: values.name ?? '',
+    price: values.price ?? '',
+    storeId: values.storeId ?? storeId,
   };
 }
 
@@ -120,5 +121,20 @@ export function buildCreateProductInput(
       storeId: values.storeId.trim(),
     },
     success: true,
+  };
+}
+
+export function buildUpdateProductInput(values: CreateProductFormValues) {
+  const createResult = buildCreateProductInput(values);
+
+  if (!createResult.success) {
+    return createResult;
+  }
+
+  const { storeId: _storeId, ...nextPayload } = createResult.data;
+
+  return {
+    data: nextPayload,
+    success: true as const,
   };
 }

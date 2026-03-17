@@ -21,6 +21,22 @@ export const newStoreScreenStyles = StyleSheet.create({
   content: {
     gap: 18,
   },
+  emptyStateCard: {
+    ...corporateShadows.card,
+    backgroundColor: corporateTheme.colors.brandSoft,
+    borderColor: corporateTheme.colors.brandMuted,
+    borderRadius: 24,
+    borderWidth: 1,
+    padding: 18,
+  },
+  emptyStateContent: {
+    gap: 14,
+  },
+  emptyStateText: {
+    color: corporateTheme.colors.textSecondary,
+    fontSize: 14,
+    lineHeight: 22,
+  },
   field: {
     gap: 8,
   },
@@ -49,6 +65,24 @@ export const newStoreScreenStyles = StyleSheet.create({
     color: corporateTheme.colors.textPrimary,
     fontSize: 14,
     fontWeight: '700',
+  },
+  loadingCard: {
+    ...corporateShadows.card,
+    backgroundColor: corporateTheme.colors.surface,
+    borderColor: corporateTheme.colors.border,
+    borderRadius: 24,
+    borderWidth: 1,
+    padding: 20,
+  },
+  loadingContent: {
+    alignItems: 'center',
+    gap: 12,
+    justifyContent: 'center',
+    minHeight: 96,
+  },
+  loadingText: {
+    color: corporateTheme.colors.textSecondary,
+    fontSize: 14,
   },
   primaryButton: {
     ...centeredButtonStyle,

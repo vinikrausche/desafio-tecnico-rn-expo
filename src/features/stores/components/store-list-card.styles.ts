@@ -1,5 +1,9 @@
 import { StyleSheet } from 'react-native';
 
+import {
+  centeredButtonStyle,
+  centeredButtonTextStyle,
+} from '../../../theme/button-presets';
 import { corporateShadows, corporateTheme } from '../../../theme/corporate-theme';
 
 export const storeListCardStyles = StyleSheet.create({
@@ -7,6 +11,12 @@ export const storeListCardStyles = StyleSheet.create({
     color: corporateTheme.colors.textSecondary,
     fontSize: 14,
     lineHeight: 22,
+  },
+  actionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    width: '100%',
   },
   badge: {
     alignSelf: 'flex-start',
@@ -31,7 +41,22 @@ export const storeListCardStyles = StyleSheet.create({
     padding: 18,
   },
   content: {
-    gap: 10,
+    gap: 14,
+  },
+  dangerActionButton: {
+    ...centeredButtonStyle,
+    backgroundColor: corporateTheme.colors.errorSoft,
+    borderColor: corporateTheme.colors.errorBorder,
+    borderRadius: 16,
+    borderWidth: 1,
+    flexBasis: '48%',
+    minHeight: 42,
+  },
+  dangerActionButtonText: {
+    ...centeredButtonTextStyle,
+    color: corporateTheme.colors.error,
+    fontSize: 13,
+    fontWeight: '700',
   },
   header: {
     alignSelf: 'stretch',
@@ -54,5 +79,33 @@ export const storeListCardStyles = StyleSheet.create({
   name: {
     color: corporateTheme.colors.textPrimary,
     lineHeight: 26,
+  },
+  primaryActionButton: {
+    ...centeredButtonStyle,
+    backgroundColor: corporateTheme.colors.brandStrong,
+    borderRadius: 16,
+    flexBasis: '48%',
+    minHeight: 42,
+  },
+  primaryActionButtonText: {
+    ...centeredButtonTextStyle,
+    color: corporateTheme.colors.textInverse,
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  secondaryActionButton: {
+    ...centeredButtonStyle,
+    backgroundColor: corporateTheme.colors.surfaceAlt,
+    borderColor: corporateTheme.colors.borderStrong,
+    borderRadius: 16,
+    borderWidth: 1,
+    flexBasis: '48%',
+    minHeight: 42,
+  },
+  secondaryActionButtonText: {
+    ...centeredButtonTextStyle,
+    color: corporateTheme.colors.brandStrong,
+    fontSize: 13,
+    fontWeight: '700',
   },
 });
