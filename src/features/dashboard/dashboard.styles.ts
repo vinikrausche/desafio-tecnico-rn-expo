@@ -1,5 +1,9 @@
 import { StyleSheet } from 'react-native';
 
+import {
+  centeredButtonStyle,
+  centeredButtonTextStyle,
+} from '../../theme/button-presets';
 import { corporateShadows, corporateTheme } from '../../theme/corporate-theme';
 
 const cardBase = {
@@ -61,6 +65,7 @@ export const dashboardStyles = StyleSheet.create({
     fontWeight: '700',
   },
   ghostButton: {
+    ...centeredButtonStyle,
     alignSelf: 'flex-start',
     backgroundColor: corporateTheme.colors.brandStrong,
     borderColor: corporateTheme.colors.brandStrong,
@@ -69,6 +74,7 @@ export const dashboardStyles = StyleSheet.create({
     minHeight: 42,
   },
   ghostButtonText: {
+    ...centeredButtonTextStyle,
     color: corporateTheme.colors.textInverse,
     fontSize: 13,
     fontWeight: '700',
@@ -182,11 +188,14 @@ export const dashboardStyles = StyleSheet.create({
     fontWeight: '700',
   },
   primaryButton: {
+    ...centeredButtonStyle,
+    alignSelf: 'stretch',
     backgroundColor: corporateTheme.colors.brandStrong,
     borderRadius: 18,
     minHeight: 52,
   },
   primaryButtonText: {
+    ...centeredButtonTextStyle,
     color: corporateTheme.colors.textInverse,
     fontSize: 15,
     fontWeight: '700',
@@ -195,12 +204,14 @@ export const dashboardStyles = StyleSheet.create({
     ...cardBase,
   },
   retryButton: {
+    ...centeredButtonStyle,
     alignSelf: 'flex-start',
     backgroundColor: corporateTheme.colors.brandStrong,
     borderRadius: 16,
     minHeight: 44,
   },
   retryButtonText: {
+    ...centeredButtonTextStyle,
     color: corporateTheme.colors.textInverse,
     fontSize: 14,
     fontWeight: '700',
@@ -218,6 +229,8 @@ export const dashboardStyles = StyleSheet.create({
     fontWeight: '700',
   },
   secondaryButton: {
+    ...centeredButtonStyle,
+    alignSelf: 'stretch',
     backgroundColor: corporateTheme.colors.surface,
     borderColor: corporateTheme.colors.borderStrong,
     borderRadius: 18,
@@ -225,6 +238,7 @@ export const dashboardStyles = StyleSheet.create({
     minHeight: 52,
   },
   secondaryButtonText: {
+    ...centeredButtonTextStyle,
     color: corporateTheme.colors.brandStrong,
     fontSize: 15,
     fontWeight: '700',
@@ -233,13 +247,17 @@ export const dashboardStyles = StyleSheet.create({
     gap: 16,
   },
   sectionHeader: {
+    alignSelf: 'stretch',
     alignItems: 'center',
+    flexDirection: 'row',
     gap: 12,
     justifyContent: 'space-between',
+    width: '100%',
   },
   sectionTitle: {
     color: corporateTheme.colors.textPrimary,
     lineHeight: 26,
+    textAlign: 'left',
   },
   storeCard: {
     backgroundColor: corporateTheme.colors.surfaceAlt,
@@ -262,9 +280,12 @@ export const dashboardStyles = StyleSheet.create({
     fontWeight: '700',
   },
   storeCardHeader: {
+    alignSelf: 'stretch',
     alignItems: 'center',
+    flexDirection: 'row',
     gap: 10,
     justifyContent: 'space-between',
+    width: '100%',
   },
   storeCardTitle: {
     color: corporateTheme.colors.textPrimary,

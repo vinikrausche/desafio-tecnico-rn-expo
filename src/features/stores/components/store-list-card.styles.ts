@@ -9,6 +9,7 @@ export const storeListCardStyles = StyleSheet.create({
     lineHeight: 22,
   },
   badge: {
+    alignSelf: 'flex-start',
     backgroundColor: corporateTheme.colors.brandSoft,
     borderColor: corporateTheme.colors.brandMuted,
     borderRadius: 999,
@@ -33,13 +34,17 @@ export const storeListCardStyles = StyleSheet.create({
     gap: 10,
   },
   header: {
+    alignSelf: 'stretch',
     alignItems: 'flex-start',
+    flexDirection: 'row',
     gap: 12,
     justifyContent: 'space-between',
+    width: '100%',
   },
   headerCopy: {
     flex: 1,
     gap: 6,
+    paddingRight: 8,
   },
   meta: {
     color: corporateTheme.colors.textMuted,

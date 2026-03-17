@@ -5,11 +5,13 @@ import { corporateShadows, corporateTheme } from '../../theme/corporate-theme';
 export const floatingActionButtonStyles = StyleSheet.create({
   fab: {
     ...corporateShadows.hero,
+    alignItems: 'center',
     backgroundColor: corporateTheme.colors.brandStrong,
     borderColor: corporateTheme.colors.brandStrong,
     borderRadius: 999,
     borderWidth: 1,
     height: 64,
+    justifyContent: 'center',
     width: 64,
   },
   icon: {

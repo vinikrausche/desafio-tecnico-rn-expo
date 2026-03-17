@@ -1,5 +1,9 @@
 import { StyleSheet } from 'react-native';
 
+import {
+  centeredButtonStyle,
+  centeredButtonTextStyle,
+} from '../../theme/button-presets';
 import { corporateShadows, corporateTheme } from '../../theme/corporate-theme';
 
 const cardBase = {
@@ -53,9 +57,12 @@ export const storesScreenStyles = StyleSheet.create({
     fontWeight: '700',
   },
   headerRow: {
+    alignSelf: 'stretch',
     alignItems: 'center',
+    flexDirection: 'row',
     gap: 12,
     justifyContent: 'space-between',
+    width: '100%',
   },
   list: {
     gap: 12,
@@ -74,17 +81,20 @@ export const storesScreenStyles = StyleSheet.create({
     fontSize: 14,
   },
   retryButton: {
+    ...centeredButtonStyle,
     alignSelf: 'flex-start',
     backgroundColor: corporateTheme.colors.brandStrong,
     borderRadius: 16,
     minHeight: 44,
   },
   retryButtonText: {
+    ...centeredButtonTextStyle,
     color: corporateTheme.colors.textInverse,
     fontSize: 14,
     fontWeight: '700',
   },
   title: {
     color: corporateTheme.colors.textPrimary,
+    textAlign: 'left',
   },
 });

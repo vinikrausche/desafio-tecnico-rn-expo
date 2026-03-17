@@ -1,5 +1,9 @@
 import { StyleSheet } from 'react-native';
 
+import {
+  centeredButtonStyle,
+  centeredButtonTextStyle,
+} from '../../theme/button-presets';
 import { corporateShadows, corporateTheme } from '../../theme/corporate-theme';
 
 export const newStoreScreenStyles = StyleSheet.create({
@@ -47,16 +51,19 @@ export const newStoreScreenStyles = StyleSheet.create({
     fontWeight: '700',
   },
   primaryButton: {
+    ...centeredButtonStyle,
     backgroundColor: corporateTheme.colors.brandStrong,
     borderRadius: 18,
     minHeight: 52,
   },
   primaryButtonText: {
+    ...centeredButtonTextStyle,
     color: corporateTheme.colors.textInverse,
     fontSize: 15,
     fontWeight: '700',
   },
   secondaryButton: {
+    ...centeredButtonStyle,
     backgroundColor: corporateTheme.colors.surface,
     borderColor: corporateTheme.colors.borderStrong,
     borderRadius: 18,
@@ -64,6 +71,7 @@ export const newStoreScreenStyles = StyleSheet.create({
     minHeight: 52,
   },
   secondaryButtonText: {
+    ...centeredButtonTextStyle,
     color: corporateTheme.colors.brandStrong,
     fontSize: 15,
     fontWeight: '700',
