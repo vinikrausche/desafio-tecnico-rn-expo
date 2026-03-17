@@ -1,4 +1,4 @@
-import { Response, type Request, type Server } from 'miragejs';
+import type { Request, Server } from 'miragejs';
 
 import type {
   CreateProductPayload,
@@ -11,6 +11,7 @@ import {
   listProducts,
   updateProduct,
 } from '../seeds/in-memory-db';
+import { httpResponse } from '../utils/http-response';
 
 function parseRequestBody<T>(request: Request): T | null {
   if (!request.requestBody) {
@@ -67,14 +68,6 @@ function isUpdateProductPayload(payload: unknown): payload is UpdateProductPaylo
   );
 }
 
-function notFound(message: string) {
-  return new Response(404, {}, { message });
-}
-
-function badRequest(message: string) {
-  return new Response(400, {}, { message });
-}
-
 export function registerProductRoutes(server: Server) {
   server.get('/products', (_schema, request) => {
     const storeId =
@@ -82,21 +75,21 @@ export function registerProductRoutes(server: Server) {
         ? request.queryParams.storeId
         : undefined;
 
-    return listProducts(storeId);
+    return httpResponse.ok(listProducts(storeId));
   });
 
   server.post('/products', (_schema, request) => {
     const payload = parseRequestBody<CreateProductPayload>(request);
 
     if (!isCreateProductPayload(payload)) {
-      return badRequest('Payload inválido para criação de produto.');
+      return httpResponse.badRequest('Payload inválido para criação de produto.');
     }
 
     if (!getStore(payload.storeId)) {
-      return notFound('A loja informada não existe.');
+      return httpResponse.notFound('A loja informada não existe.');
     }
 
-    return createProduct(payload);
+    return httpResponse.created(createProduct(payload));
   });
 
   server.put('/products/:productId', (_schema, request) => {
@@ -104,35 +97,35 @@ export function registerProductRoutes(server: Server) {
     const productId = request.params.productId;
 
     if (!productId) {
-      return notFound('Produto não encontrado.');
+      return httpResponse.notFound('Produto não encontrado.');
     }
 
     if (!isUpdateProductPayload(payload)) {
-      return badRequest('Payload inválido para atualização de produto.');
+      return httpResponse.badRequest('Payload inválido para atualização de produto.');
     }
 
     const nextProduct = updateProduct(productId, payload);
 
     if (!nextProduct) {
-      return notFound('Produto não encontrado.');
+      return httpResponse.notFound('Produto não encontrado.');
     }
 
-    return nextProduct;
+    return httpResponse.ok(nextProduct);
   });
 
   server.delete('/products/:productId', (_schema, request) => {
     const productId = request.params.productId;
 
     if (!productId) {
-      return notFound('Produto não encontrado.');
+      return httpResponse.notFound('Produto não encontrado.');
     }
 
     const removed = deleteProduct(productId);
 
     if (!removed) {
-      return notFound('Produto não encontrado.');
+      return httpResponse.notFound('Produto não encontrado.');
     }
 
-    return new Response(204);
+    return httpResponse.noContent();
   });
 }

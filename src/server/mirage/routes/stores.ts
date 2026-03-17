@@ -1,4 +1,4 @@
-import { Response, type Request, type Server } from 'miragejs';
+import type { Request, Server } from 'miragejs';
 
 import type {
   CreateStorePayload,
@@ -12,6 +12,7 @@ import {
   listStores,
   updateStore,
 } from '../seeds/in-memory-db';
+import { httpResponse } from '../utils/http-response';
 
 function parseRequestBody<T>(request: Request): T | null {
   if (!request.requestBody) {
@@ -42,27 +43,19 @@ function isStorePayload(
   );
 }
 
-function notFound(message: string) {
-  return new Response(404, {}, { message });
-}
-
-function badRequest(message: string) {
-  return new Response(400, {}, { message });
-}
-
 export function registerStoreRoutes(server: Server) {
   server.get('/stores', () => {
-    return listStores();
+    return httpResponse.ok(listStores());
   });
 
   server.post('/stores', (_schema, request) => {
     const payload = parseRequestBody<CreateStorePayload>(request);
 
     if (!isStorePayload(payload)) {
-      return badRequest('Payload inválido para criação de loja.');
+      return httpResponse.badRequest('Payload inválido para criação de loja.');
     }
 
-    return createStore(payload);
+    return httpResponse.created(createStore(payload));
   });
 
   server.put('/stores/:storeId', (_schema, request) => {
@@ -70,51 +63,51 @@ export function registerStoreRoutes(server: Server) {
     const storeId = request.params.storeId;
 
     if (!isStorePayload(payload)) {
-      return badRequest('Payload inválido para atualização de loja.');
+      return httpResponse.badRequest('Payload inválido para atualização de loja.');
     }
 
     if (!storeId) {
-      return notFound('Loja não encontrada.');
+      return httpResponse.notFound('Loja não encontrada.');
     }
 
     const nextStore = updateStore(storeId, payload);
 
     if (!nextStore) {
-      return notFound('Loja não encontrada.');
+      return httpResponse.notFound('Loja não encontrada.');
     }
 
-    return nextStore;
+    return httpResponse.ok(nextStore);
   });
 
   server.delete('/stores/:storeId', (_schema, request) => {
     const storeId = request.params.storeId;
 
     if (!storeId) {
-      return notFound('Loja não encontrada.');
+      return httpResponse.notFound('Loja não encontrada.');
     }
 
     const removed = deleteStore(storeId);
 
     if (!removed) {
-      return notFound('Loja não encontrada.');
+      return httpResponse.notFound('Loja não encontrada.');
     }
 
-    return new Response(204);
+    return httpResponse.noContent();
   });
 
   server.get('/stores/:storeId/products', (_schema, request) => {
     const storeId = request.params.storeId;
 
     if (!storeId) {
-      return notFound('Loja não encontrada.');
+      return httpResponse.notFound('Loja não encontrada.');
     }
 
     const store = getStore(storeId);
 
     if (!store) {
-      return notFound('Loja não encontrada.');
+      return httpResponse.notFound('Loja não encontrada.');
     }
 
-    return listProducts(storeId);
+    return httpResponse.ok(listProducts(storeId));
   });
 }
