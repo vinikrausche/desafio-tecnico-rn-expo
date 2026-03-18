@@ -1,23 +1,13 @@
-import {
-  Badge,
-  BadgeText,
-  Button,
-  ButtonText,
-  Card,
-  Heading,
-  HStack,
-  Spinner,
-  Text,
-  VStack,
-} from '@gluestack-ui/themed';
+import { VStack } from '@gluestack-ui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
 
+import { StateCard } from '../../../../src/components/feedback/state-card';
+import { ListHeader } from '../../../../src/components/layout/list-header';
 import { FloatingActionButton } from '../../../../src/components/actions/floating-action-button';
 import { ScreenShell } from '../../../../src/components/layout/screen-shell';
 import { resolveRouteParam } from '../../../../src/lib/router/resolve-route-param';
-import { corporateTheme } from '../../../../src/theme/corporate-theme';
 import { ProductListCard } from '../../../../src/features/products/components/product-list-card';
 import { productsScreenStyles as styles } from '../../../../src/features/products/products-screen.styles';
 import { useProductZustand } from '../../../../src/features/products/store/products.store';
@@ -107,54 +97,34 @@ export default function ProductsScreen() {
       title="Produtos"
     >
       <VStack style={styles.content}>
-        <HStack style={styles.headerRow}>
-          <Heading size="md" style={styles.title}>
-            Lista
-          </Heading>
-
-          <Badge style={styles.counterBadge}>
-            <BadgeText style={styles.counterBadgeText}>
-              {products.length} produtos
-            </BadgeText>
-          </Badge>
-        </HStack>
+        <ListHeader badgeLabel={`${products.length} produtos`} title="Lista" />
 
         {isLoadingProducts ? (
-          <Card style={styles.loadingCard}>
-            <HStack style={styles.loadingRow}>
-              <Spinner size="large" color={corporateTheme.colors.brand} />
-              <Text style={styles.loadingText}>Carregando produtos...</Text>
-            </HStack>
-          </Card>
+          <StateCard
+            layout="row"
+            message="Carregando produtos..."
+            minHeight={120}
+            showSpinner
+            tone="surface"
+          />
         ) : null}
 
         {hasProductLoadError ? (
-          <Card style={styles.errorCard}>
-            <VStack style={styles.content}>
-              <Text style={styles.errorTitle}>Falha ao carregar</Text>
-              <Text style={styles.errorText}>
-                {productErrorMessage ??
-                  'Nao foi possivel carregar os produtos.'}
-              </Text>
-
-              <Button
-                style={styles.retryButton}
-                onPress={() =>
-                  void loadProductsByStore(resolvedStoreId, { force: true })
-                }
-              >
-                <ButtonText style={styles.retryButtonText}>
-                  Tentar novamente
-                </ButtonText>
-              </Button>
-            </VStack>
-          </Card>
+          <StateCard
+            actionLabel="Tentar novamente"
+            message={
+              productErrorMessage ?? 'Nao foi possivel carregar os produtos.'
+            }
+            onAction={() =>
+              void loadProductsByStore(resolvedStoreId, { force: true })
+            }
+            title="Falha ao carregar"
+            tone="error"
+          />
         ) : null}
 
         {!isLoadingProducts && !hasProductLoadError && products.length === 0 ? (
-          <Card style={styles.emptyCard}>
-            <Text style={styles.emptyText}>Nenhum produto cadastrado.</Text>
-          </Card>
+          <StateCard message="Nenhum produto cadastrado." tone="surface" />
         ) : null}
 
         {!isLoadingProducts && !hasProductLoadError && products.length > 0 ? (

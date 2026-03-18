@@ -1,19 +1,11 @@
-import {
-  Button,
-  ButtonText,
-  Card,
-  Input,
-  InputField,
-  Text,
-  VStack,
-} from '@gluestack-ui/themed';
-
+import { FormActions } from '../../../components/forms/form-actions';
+import { FormCard } from '../../../components/forms/form-card';
+import { FormTextInput } from '../../../components/forms/form-text-input';
 import type {
   StoreFormErrors,
   StoreFormField,
   StoreFormValues,
 } from '../models/store-form.model';
-import { newStoreScreenStyles as styles } from '../new-store-screen.styles';
 
 type StoreFormProps = {
   errors: StoreFormErrors;
@@ -36,64 +28,32 @@ export function StoreForm({
   submitLabel = 'Salvar loja',
 }: StoreFormProps) {
   return (
-    <Card style={styles.card}>
-      <VStack style={styles.content}>
-        {errors.form ? (
-          <Text style={styles.formError}>{errors.form}</Text>
-        ) : null}
+    <FormCard errorMessage={errors.form}>
+      <FormTextInput
+        autoCapitalize="words"
+        errorMessage={errors.name}
+        label="Nome"
+        onChangeText={(value) => onFieldChange('name', value)}
+        placeholder="Nome da loja"
+        value={formValues.name}
+      />
 
-        <VStack style={styles.field}>
-          <Text style={styles.label}>Nome</Text>
-          <Input style={styles.input}>
-            <InputField
-              autoCapitalize="words"
-              onChangeText={(value) => onFieldChange('name', value)}
-              placeholder="Nome da loja"
-              style={styles.inputField}
-              value={formValues.name}
-            />
-          </Input>
-          {errors.name ? (
-            <Text style={styles.fieldError}>{errors.name}</Text>
-          ) : null}
-        </VStack>
+      <FormTextInput
+        autoCapitalize="words"
+        errorMessage={errors.address}
+        label="Endereco"
+        onChangeText={(value) => onFieldChange('address', value)}
+        placeholder="Endereco da loja"
+        value={formValues.address}
+      />
 
-        <VStack style={styles.field}>
-          <Text style={styles.label}>Endereco</Text>
-          <Input style={styles.input}>
-            <InputField
-              autoCapitalize="words"
-              onChangeText={(value) => onFieldChange('address', value)}
-              placeholder="Endereco da loja"
-              style={styles.inputField}
-              value={formValues.address}
-            />
-          </Input>
-          {errors.address ? (
-            <Text style={styles.fieldError}>{errors.address}</Text>
-          ) : null}
-        </VStack>
-
-        <VStack style={styles.buttonGroup}>
-          <Button
-            isDisabled={isSubmitting}
-            onPress={() => void onSubmit()}
-            style={styles.primaryButton}
-          >
-            <ButtonText style={styles.primaryButtonText}>
-              {isSubmitting ? 'Salvando...' : submitLabel}
-            </ButtonText>
-          </Button>
-
-          <Button
-            isDisabled={isSubmitting}
-            onPress={onCancel}
-            style={styles.secondaryButton}
-          >
-            <ButtonText style={styles.secondaryButtonText}>Cancelar</ButtonText>
-          </Button>
-        </VStack>
-      </VStack>
-    </Card>
+      <FormActions
+        isPrimaryDisabled={isSubmitting}
+        isSecondaryDisabled={isSubmitting}
+        onPrimaryPress={() => void onSubmit()}
+        onSecondaryPress={onCancel}
+        primaryLabel={isSubmitting ? 'Salvando...' : submitLabel}
+      />
+    </FormCard>
   );
 }
