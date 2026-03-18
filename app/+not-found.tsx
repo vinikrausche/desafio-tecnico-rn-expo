@@ -6,15 +6,15 @@ import { notFoundScreenStyles as styles } from '../src/features/not-found/not-fo
 
 export default function NotFoundScreen() {
   return (
-    <ScreenShell eyebrow="404" title="Rota não encontrada">
+    <ScreenShell eyebrow="404" title="Rota nao encontrada">
       <Card style={styles.card}>
         <VStack style={styles.content}>
-          <Text style={styles.text}>Caminho indisponível.</Text>
+          <Text style={styles.text}>Caminho indisponivel.</Text>
 
           <Link href="/" asChild>
             <Button style={styles.button}>
               <ButtonText style={styles.buttonText}>
-                Ir para o início
+                Ir para o inicio
               </ButtonText>
             </Button>
           </Link>

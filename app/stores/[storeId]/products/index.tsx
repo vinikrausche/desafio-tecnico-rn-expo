@@ -16,27 +16,18 @@ import { Alert } from 'react-native';
 
 import { FloatingActionButton } from '../../../../src/components/actions/floating-action-button';
 import { ScreenShell } from '../../../../src/components/layout/screen-shell';
+import { resolveRouteParam } from '../../../../src/lib/router/resolve-route-param';
+import { corporateTheme } from '../../../../src/theme/corporate-theme';
 import { ProductListCard } from '../../../../src/features/products/components/product-list-card';
 import { productsScreenStyles as styles } from '../../../../src/features/products/products-screen.styles';
-import { corporateTheme } from '../../../../src/theme/corporate-theme';
-import { useNavigationStore } from '../../../../src/store/navigation.store';
-import { useProductZustand } from '../../../../src/zustand/product';
+import { useProductZustand } from '../../../../src/features/products/store/products.store';
 
 const EMPTY_PRODUCT_IDS: string[] = [];
 
-function resolveParam(param: string | string[] | undefined): string {
-  if (Array.isArray(param)) {
-    return param[0] ?? 'unknown-store';
-  }
-
-  return param ?? 'unknown-store';
-}
-
-// ! A lista por loja reaproveita o cache global e so busca a loja alvo quando necessario.
 export default function ProductsScreen() {
   const router = useRouter();
   const { storeId } = useLocalSearchParams<{ storeId?: string | string[] }>();
-  const resolvedStoreId = resolveParam(storeId);
+  const resolvedStoreId = resolveRouteParam(storeId, 'unknown-store');
   const deleteProduct = useProductZustand((state) => state.deleteProduct);
   const loadProductsByStore = useProductZustand(
     (state) => state.loadProductsByStore,
@@ -51,16 +42,11 @@ export default function ProductsScreen() {
   const productStatus = useProductZustand(
     (state) => state.storeStatusById[resolvedStoreId] ?? 'idle',
   );
-  const setLastVisitedModule = useNavigationStore(
-    (state) => state.setLastVisitedModule,
-  );
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
 
   useEffect(() => {
-    setLastVisitedModule('products');
-
     void loadProductsByStore(resolvedStoreId);
-  }, [loadProductsByStore, resolvedStoreId, setLastVisitedModule]);
+  }, [loadProductsByStore, resolvedStoreId]);
 
   const scopedProductIds = productIdsByStore ?? EMPTY_PRODUCT_IDS;
   const products = useMemo(
@@ -148,7 +134,7 @@ export default function ProductsScreen() {
               <Text style={styles.errorTitle}>Falha ao carregar</Text>
               <Text style={styles.errorText}>
                 {productErrorMessage ??
-                  'Não foi possível carregar os produtos.'}
+                  'Nao foi possivel carregar os produtos.'}
               </Text>
 
               <Button

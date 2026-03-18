@@ -10,37 +10,25 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
 import { ScreenShell } from '../../../../../src/components/layout/screen-shell';
+import { resolveRouteParam } from '../../../../../src/lib/router/resolve-route-param';
+import { corporateTheme } from '../../../../../src/theme/corporate-theme';
 import { ProductForm } from '../../../../../src/features/products/components/product-form';
 import { useCreateProductForm } from '../../../../../src/features/products/hooks/use-create-product-form';
 import { newProductScreenStyles as styles } from '../../../../../src/features/products/new-product-screen.styles';
-import { useNavigationStore } from '../../../../../src/store/navigation.store';
-import { useProductZustand } from '../../../../../src/zustand/product';
-import { corporateTheme } from '../../../../../src/theme/corporate-theme';
+import { useProductZustand } from '../../../../../src/features/products/store/products.store';
 
-function resolveParam(
-  param: string | string[] | undefined,
-  fallback: string,
-): string {
-  if (Array.isArray(param)) {
-    return param[0] ?? fallback;
-  }
-
-  return param ?? fallback;
-}
-
-function formatPriceForInput(value: number): string {
+function formatPriceForInput(value: number) {
   return value.toFixed(2).replace('.', ',');
 }
 
-// ! A edicao de produto reaproveita o formulario do cadastro e mantem a loja vinculada fixa.
 export default function EditProductScreen() {
   const router = useRouter();
   const { productId, storeId } = useLocalSearchParams<{
     productId?: string | string[];
     storeId?: string | string[];
   }>();
-  const resolvedProductId = resolveParam(productId, 'unknown-product');
-  const resolvedStoreId = resolveParam(storeId, 'unknown-store');
+  const resolvedProductId = resolveRouteParam(productId, 'unknown-product');
+  const resolvedStoreId = resolveRouteParam(storeId, 'unknown-store');
   const currentProduct = useProductZustand(
     (state) => state.productsById[resolvedProductId],
   );
@@ -52,9 +40,6 @@ export default function EditProductScreen() {
   );
   const productStatus = useProductZustand(
     (state) => state.storeStatusById[resolvedStoreId] ?? 'idle',
-  );
-  const setLastVisitedModule = useNavigationStore(
-    (state) => state.setLastVisitedModule,
   );
   const updateProduct = useProductZustand((state) => state.updateProduct);
   const {
@@ -69,10 +54,8 @@ export default function EditProductScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    setLastVisitedModule('products');
-
     void loadProductsByStore(resolvedStoreId);
-  }, [loadProductsByStore, resolvedStoreId, setLastVisitedModule]);
+  }, [loadProductsByStore, resolvedStoreId]);
 
   useEffect(() => {
     syncStoreId(resolvedStoreId);

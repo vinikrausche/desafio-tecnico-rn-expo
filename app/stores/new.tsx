@@ -1,25 +1,17 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { ScreenShell } from '../../src/components/layout/screen-shell';
 import { StoreForm } from '../../src/features/stores/components/store-form';
 import { useStoreForm } from '../../src/features/stores/hooks/use-store-form';
-import { useNavigationStore } from '../../src/store/navigation.store';
-import { useStoreZustand } from '../../src/zustand/store';
+import { useStoreZustand } from '../../src/features/stores/store/stores.store';
 
 export default function NewStoreScreen() {
   const router = useRouter();
   const createStore = useStoreZustand((state) => state.createStore);
-  const setLastVisitedModule = useNavigationStore(
-    (state) => state.setLastVisitedModule,
-  );
   const { errors, formValues, getCreatePayload, setFormError, updateField } =
     useStoreForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    setLastVisitedModule('stores');
-  }, [setLastVisitedModule]);
 
   async function handleSubmit() {
     const payload = getCreatePayload();

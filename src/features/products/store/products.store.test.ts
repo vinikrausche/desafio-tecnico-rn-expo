@@ -1,9 +1,9 @@
-import { productsService } from '../features/products/services/products.service';
-import type { ProductSummary } from '../features/products/product.types';
-import { useProductZustand } from './product';
-import { useStoreZustand } from './store';
+import { useStoreZustand } from '../../stores/store/stores.store';
+import { productsService } from '../services/products.service';
+import type { ProductSummary } from '../product.types';
+import { useProductZustand } from './products.store';
 
-jest.mock('../features/products/services/products.service', () => ({
+jest.mock('../services/products.service', () => ({
   productsService: {
     create: jest.fn(),
     delete: jest.fn(),
