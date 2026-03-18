@@ -18,11 +18,10 @@ import { useEffect, useMemo } from 'react';
 
 import { ScreenShell } from '../src/components/layout/screen-shell';
 import { StorefrontIcon } from '../src/components/icons/storefront-icon';
-import { dashboardStyles as styles } from '../src/features/dashboard/dashboard.styles';
 import { corporateTheme } from '../src/theme/corporate-theme';
-import { useNavigationStore } from '../src/store/navigation.store';
-import { useProductZustand } from '../src/zustand/product';
-import { useStoreZustand } from '../src/zustand/store';
+import { useProductZustand } from '../src/features/products/store/products.store';
+import { useStoreZustand } from '../src/features/stores/store/stores.store';
+import { dashboardStyles as styles } from '../src/features/dashboard/dashboard.styles';
 
 function formatCurrency(value: number) {
   const [integer, decimal] = value.toFixed(2).split('.');
@@ -56,9 +55,6 @@ export default function HomeScreen() {
   const loadCatalog = useProductZustand((state) => state.loadCatalog);
   const productIds = useProductZustand((state) => state.productIds);
   const productsById = useProductZustand((state) => state.productsById);
-  const setLastVisitedModule = useNavigationStore(
-    (state) => state.setLastVisitedModule,
-  );
   const loadStores = useStoreZustand((state) => state.loadStores);
   const storeIds = useStoreZustand((state) => state.storeIds);
   const storesById = useStoreZustand((state) => state.storesById);
@@ -66,10 +62,8 @@ export default function HomeScreen() {
   const storesStatus = useStoreZustand((state) => state.status);
 
   useEffect(() => {
-    setLastVisitedModule('home');
-
     void Promise.all([loadStores(), loadCatalog()]);
-  }, [loadCatalog, loadStores, setLastVisitedModule]);
+  }, [loadCatalog, loadStores]);
 
   const products = useMemo(
     () =>
@@ -118,7 +112,6 @@ export default function HomeScreen() {
       key: 'view-stores',
       label: 'Ver lojas',
       onPress: () => {
-        setLastVisitedModule('stores');
         router.push('/stores');
       },
       variant: 'secondary' as const,
@@ -129,7 +122,6 @@ export default function HomeScreen() {
       key: 'create-store',
       label: 'Nova loja',
       onPress: () => {
-        setLastVisitedModule('stores');
         router.push('/stores/new');
       },
       variant: 'primary' as const,
@@ -140,8 +132,6 @@ export default function HomeScreen() {
       key: 'view-products',
       label: 'Ver produtos',
       onPress: () => {
-        // ! Product access stays top-level so the dashboard shortcut is always usable.
-        setLastVisitedModule('products');
         router.push('/products');
       },
       variant: 'secondary' as const,
@@ -152,8 +142,6 @@ export default function HomeScreen() {
       key: 'create-product',
       label: 'Novo produto',
       onPress: () => {
-        // ! Product creation starts by choosing a store instead of depending on the ranking card.
-        setLastVisitedModule('products');
         router.push('/products/new');
       },
       variant: 'primary' as const,
@@ -161,7 +149,7 @@ export default function HomeScreen() {
   ];
 
   return (
-    <ScreenShell eyebrow="Início" title="Dashboard">
+    <ScreenShell eyebrow="Inicio" title="Dashboard">
       <VStack style={styles.content}>
         <VStack style={styles.metricGrid}>
           <Card style={styles.metricCardPrimary}>
@@ -198,7 +186,7 @@ export default function HomeScreen() {
         <Card style={styles.actionsCard}>
           <VStack style={styles.sectionContent}>
             <Heading size="md" style={styles.sectionTitle}>
-              Ações
+              Acoes
             </Heading>
 
             <HStack style={styles.actionGrid}>
@@ -287,7 +275,6 @@ export default function HomeScreen() {
                   <Button
                     style={styles.ghostButton}
                     onPress={() => {
-                      setLastVisitedModule('products');
                       router.push(`/stores/${leadingStore.id}/products`);
                     }}
                   >
@@ -320,7 +307,7 @@ export default function HomeScreen() {
               <HStack style={styles.loadingRow}>
                 <Spinner size="large" color={corporateTheme.colors.brand} />
                 <Text style={styles.loadingText}>
-                  Carregando visão resumida...
+                  Carregando visao resumida...
                 </Text>
               </HStack>
             ) : null}
@@ -332,7 +319,7 @@ export default function HomeScreen() {
                 </Text>
                 <Text style={styles.feedbackText}>
                   {dashboardErrorMessage ??
-                    'O mock não respondeu como esperado.'}
+                    'O mock nao respondeu como esperado.'}
                 </Text>
 
                 <Button

@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 
-import { productsService } from '../features/products/services/products.service';
+import { useStoreZustand } from '../../stores/store/stores.store';
+import { productsService } from '../services/products.service';
 import type {
   CreateProductInput,
   ProductSummary,
   UpdateProductInput,
-} from '../features/products/product.types';
-import { useStoreZustand } from './store';
+} from '../product.types';
 
 type ResourceStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -183,7 +183,8 @@ async function requestProductsByStoreFromApi(
   return request;
 }
 
-// ! Zustand de produtos: guarda catalogo global e tambem cache por loja para evitar novas requisicoes.
+// ! O cache de produtos fica dentro da feature e concentra as regras de leitura
+// ! do catalogo geral e do escopo por loja.
 export const useProductZustand = create<ProductZustandState>((set, get) => ({
   catalogErrorMessage: null,
   catalogStatus: 'idle',

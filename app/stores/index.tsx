@@ -16,14 +16,12 @@ import { Alert } from 'react-native';
 
 import { FloatingActionButton } from '../../src/components/actions/floating-action-button';
 import { ScreenShell } from '../../src/components/layout/screen-shell';
+import { corporateTheme } from '../../src/theme/corporate-theme';
+import { useProductZustand } from '../../src/features/products/store/products.store';
 import { StoreListCard } from '../../src/features/stores/components/store-list-card';
 import { storesScreenStyles as styles } from '../../src/features/stores/stores-screen.styles';
-import { corporateTheme } from '../../src/theme/corporate-theme';
-import { useNavigationStore } from '../../src/store/navigation.store';
-import { useProductZustand } from '../../src/zustand/product';
-import { useStoreZustand } from '../../src/zustand/store';
+import { useStoreZustand } from '../../src/features/stores/store/stores.store';
 
-// ! A tela de lojas le do cache global e so faz fetch quando o catalogo ainda nao foi hidratado.
 export default function StoresScreen() {
   const router = useRouter();
   const deleteStore = useStoreZustand((state) => state.deleteStore);
@@ -35,16 +33,11 @@ export default function StoresScreen() {
   const removeProductsByStore = useProductZustand(
     (state) => state.removeProductsByStore,
   );
-  const setLastVisitedModule = useNavigationStore(
-    (state) => state.setLastVisitedModule,
-  );
   const [pendingStoreId, setPendingStoreId] = useState<string | null>(null);
 
   useEffect(() => {
-    setLastVisitedModule('stores');
-
     void loadStores();
-  }, [loadStores, setLastVisitedModule]);
+  }, [loadStores]);
 
   const stores = useMemo(
     () =>
@@ -130,7 +123,7 @@ export default function StoresScreen() {
             <VStack style={styles.content}>
               <Text style={styles.errorTitle}>Falha ao carregar</Text>
               <Text style={styles.errorText}>
-                {errorMessage ?? 'Não foi possível carregar as lojas.'}
+                {errorMessage ?? 'Nao foi possivel carregar as lojas.'}
               </Text>
 
               <Button

@@ -1,8 +1,8 @@
-import { storesService } from '../features/stores/services/stores.service';
-import type { StoreSummary } from '../features/stores/store.types';
-import { useStoreZustand } from './store';
+import { storesService } from '../services/stores.service';
+import type { StoreSummary } from '../store.types';
+import { useStoreZustand } from './stores.store';
 
-jest.mock('../features/stores/services/stores.service', () => ({
+jest.mock('../services/stores.service', () => ({
   storesService: {
     create: jest.fn(),
     delete: jest.fn(),

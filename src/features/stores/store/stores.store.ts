@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
-import { storesService } from '../features/stores/services/stores.service';
+import { storesService } from '../services/stores.service';
 import type {
   CreateStoreInput,
   StoreSummary,
   UpdateStoreInput,
-} from '../features/stores/store.types';
+} from '../store.types';
 
 type ResourceStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -97,7 +97,8 @@ async function requestStoresFromApi(): Promise<StoreSummary[]> {
   return storesRequest;
 }
 
-// ! Zustand de lojas: carrega uma vez, reaproveita cache e atualiza localmente apos mutacoes.
+// ! O cache de lojas fica dentro da feature para manter as regras do modulo
+// ! longe das rotas do Expo Router.
 export const useStoreZustand = create<StoreZustandState>((set, get) => ({
   errorMessage: null,
   hasLoadedOnce: false,

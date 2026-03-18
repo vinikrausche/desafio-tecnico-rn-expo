@@ -10,34 +10,22 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
 import { ScreenShell } from '../../../src/components/layout/screen-shell';
+import { resolveRouteParam } from '../../../src/lib/router/resolve-route-param';
+import { corporateTheme } from '../../../src/theme/corporate-theme';
 import { StoreForm } from '../../../src/features/stores/components/store-form';
 import { useStoreForm } from '../../../src/features/stores/hooks/use-store-form';
 import { newStoreScreenStyles as styles } from '../../../src/features/stores/new-store-screen.styles';
-import { useNavigationStore } from '../../../src/store/navigation.store';
-import { useStoreZustand } from '../../../src/zustand/store';
-import { corporateTheme } from '../../../src/theme/corporate-theme';
+import { useStoreZustand } from '../../../src/features/stores/store/stores.store';
 
-function resolveParam(param: string | string[] | undefined): string {
-  if (Array.isArray(param)) {
-    return param[0] ?? 'unknown-store';
-  }
-
-  return param ?? 'unknown-store';
-}
-
-// ! A edicao de loja usa o mesmo formulario do cadastro e so hidrata os dados iniciais.
 export default function EditStoreScreen() {
   const router = useRouter();
   const { storeId } = useLocalSearchParams<{ storeId?: string | string[] }>();
-  const resolvedStoreId = resolveParam(storeId);
+  const resolvedStoreId = resolveRouteParam(storeId, 'unknown-store');
   const loadStores = useStoreZustand((state) => state.loadStores);
   const store = useStoreZustand((state) => state.storesById[resolvedStoreId]);
   const storesErrorMessage = useStoreZustand((state) => state.errorMessage);
   const storesStatus = useStoreZustand((state) => state.status);
   const updateStore = useStoreZustand((state) => state.updateStore);
-  const setLastVisitedModule = useNavigationStore(
-    (state) => state.setLastVisitedModule,
-  );
   const {
     errors,
     formValues,
@@ -49,10 +37,8 @@ export default function EditStoreScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    setLastVisitedModule('stores');
-
     void loadStores();
-  }, [loadStores, setLastVisitedModule]);
+  }, [loadStores]);
 
   useEffect(() => {
     if (!store) {

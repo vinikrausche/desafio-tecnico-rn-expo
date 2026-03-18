@@ -10,15 +10,13 @@ import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 
 import { ScreenShell } from '../../src/components/layout/screen-shell';
+import { corporateTheme } from '../../src/theme/corporate-theme';
+import { useStoreZustand } from '../../src/features/stores/store/stores.store';
 import { ProductForm } from '../../src/features/products/components/product-form';
 import { useCreateProductForm } from '../../src/features/products/hooks/use-create-product-form';
 import { newProductScreenStyles as styles } from '../../src/features/products/new-product-screen.styles';
-import { corporateTheme } from '../../src/theme/corporate-theme';
-import { useNavigationStore } from '../../src/store/navigation.store';
-import { useStoreZustand } from '../../src/zustand/store';
-import { useProductZustand } from '../../src/zustand/product';
+import { useProductZustand } from '../../src/features/products/store/products.store';
 
-// ! The top-level product flow keeps the full form visible and lets the user bind the item to a store.
 export default function NewProductScreen() {
   const router = useRouter();
   const createProduct = useProductZustand((state) => state.createProduct);
@@ -27,9 +25,6 @@ export default function NewProductScreen() {
   const storesById = useStoreZustand((state) => state.storesById);
   const storesErrorMessage = useStoreZustand((state) => state.errorMessage);
   const storesStatus = useStoreZustand((state) => state.status);
-  const setLastVisitedModule = useNavigationStore(
-    (state) => state.setLastVisitedModule,
-  );
   const {
     errors,
     formValues,
@@ -41,10 +36,8 @@ export default function NewProductScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    setLastVisitedModule('products');
-
     void loadStores();
-  }, [loadStores, setLastVisitedModule]);
+  }, [loadStores]);
 
   const stores = useMemo(
     () =>

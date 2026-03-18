@@ -16,13 +16,12 @@ import { Alert } from 'react-native';
 
 import { FloatingActionButton } from '../../src/components/actions/floating-action-button';
 import { ScreenShell } from '../../src/components/layout/screen-shell';
+import { corporateTheme } from '../../src/theme/corporate-theme';
+import type { ProductSummary } from '../../src/features/products/product.types';
 import { ProductListCard } from '../../src/features/products/components/product-list-card';
 import { productsScreenStyles as styles } from '../../src/features/products/products-screen.styles';
-import type { ProductSummary } from '../../src/features/products/product.types';
-import { corporateTheme } from '../../src/theme/corporate-theme';
-import { useNavigationStore } from '../../src/store/navigation.store';
-import { useProductZustand } from '../../src/zustand/product';
-import { useStoreZustand } from '../../src/zustand/store';
+import { useProductZustand } from '../../src/features/products/store/products.store';
+import { useStoreZustand } from '../../src/features/stores/store/stores.store';
 
 function attachStoreName(
   products: ProductSummary[],
@@ -34,7 +33,6 @@ function attachStoreName(
   }));
 }
 
-// ! A tela principal de produtos le do cache global e aproveita o catalogo ja hidratado.
 export default function ProductsCatalogScreen() {
   const router = useRouter();
   const catalogErrorMessage = useProductZustand(
@@ -47,16 +45,11 @@ export default function ProductsCatalogScreen() {
   const productsById = useProductZustand((state) => state.productsById);
   const loadStores = useStoreZustand((state) => state.loadStores);
   const storesById = useStoreZustand((state) => state.storesById);
-  const setLastVisitedModule = useNavigationStore(
-    (state) => state.setLastVisitedModule,
-  );
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
 
   useEffect(() => {
-    setLastVisitedModule('products');
-
     void Promise.all([loadCatalog(), loadStores()]);
-  }, [loadCatalog, loadStores, setLastVisitedModule]);
+  }, [loadCatalog, loadStores]);
 
   const products = useMemo(
     () =>
@@ -151,7 +144,7 @@ export default function ProductsCatalogScreen() {
               <Text style={styles.errorTitle}>Falha ao carregar</Text>
               <Text style={styles.errorText}>
                 {catalogErrorMessage ??
-                  'Não foi possível carregar os produtos.'}
+                  'Nao foi possivel carregar os produtos.'}
               </Text>
 
               <Button
