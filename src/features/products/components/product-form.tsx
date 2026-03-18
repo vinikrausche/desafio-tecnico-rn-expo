@@ -1,13 +1,8 @@
-import {
-  Button,
-  ButtonText,
-  Card,
-  Input,
-  InputField,
-  Text,
-  VStack,
-} from '@gluestack-ui/themed';
+import { Button, Text, VStack } from '@gluestack-ui/themed';
 
+import { FormActions } from '../../../components/forms/form-actions';
+import { FormCard } from '../../../components/forms/form-card';
+import { FormTextInput } from '../../../components/forms/form-text-input';
 import type {
   CreateProductFormErrors,
   CreateProductFormField,
@@ -52,134 +47,91 @@ export function ProductForm({
   const shouldShowStoreField = isStoreEditable;
 
   return (
-    <Card style={styles.card}>
-      <VStack style={styles.content}>
-        {errors.form ? (
-          <Text style={styles.formError}>{errors.form}</Text>
-        ) : null}
-
-        {shouldShowStoreField ? (
-          <VStack style={styles.field}>
-            <Text style={styles.label}>Loja</Text>
-
-            {storeOptions.length > 0 ? (
-              <VStack style={styles.storeOptionList}>
-                {storeOptions.map((store) => {
-                  const isSelected = formValues.storeId === store.id;
-
-                  return (
-                    <Button
-                      key={store.id}
-                      onPress={() => onStoreSelect(store.id)}
-                      style={[
-                        styles.storeOptionButton,
-                        isSelected ? styles.storeOptionButtonSelected : null,
-                      ]}
-                    >
-                      <VStack style={styles.storeOptionContent}>
-                        <Text
-                          style={[
-                            styles.storeOptionName,
-                            isSelected ? styles.storeOptionNameSelected : null,
-                          ]}
-                        >
-                          {store.name}
-                        </Text>
-                        <Text
-                          style={[
-                            styles.storeOptionAddress,
-                            isSelected
-                              ? styles.storeOptionAddressSelected
-                              : null,
-                          ]}
-                        >
-                          {store.address}
-                        </Text>
-                      </VStack>
-                    </Button>
-                  );
-                })}
-              </VStack>
-            ) : (
-              <Text style={styles.storeEmptyText}>
-                Nenhuma loja disponivel.
-              </Text>
-            )}
-
-            {errors.storeId ? (
-              <Text style={styles.fieldError}>{errors.storeId}</Text>
-            ) : null}
-          </VStack>
-        ) : null}
-
+    <FormCard errorMessage={errors.form}>
+      {shouldShowStoreField ? (
         <VStack style={styles.field}>
-          <Text style={styles.label}>Nome</Text>
-          <Input style={styles.input}>
-            <InputField
-              autoCapitalize="words"
-              onChangeText={(value) => onFieldChange('name', value)}
-              placeholder="Nome do produto"
-              style={styles.inputField}
-              value={formValues.name}
-            />
-          </Input>
-          {errors.name ? (
-            <Text style={styles.fieldError}>{errors.name}</Text>
+          <Text style={styles.label}>Loja</Text>
+
+          {storeOptions.length > 0 ? (
+            <VStack style={styles.storeOptionList}>
+              {storeOptions.map((store) => {
+                const isSelected = formValues.storeId === store.id;
+
+                return (
+                  <Button
+                    key={store.id}
+                    onPress={() => onStoreSelect(store.id)}
+                    style={[
+                      styles.storeOptionButton,
+                      isSelected ? styles.storeOptionButtonSelected : null,
+                    ]}
+                  >
+                    <VStack style={styles.storeOptionContent}>
+                      <Text
+                        style={[
+                          styles.storeOptionName,
+                          isSelected ? styles.storeOptionNameSelected : null,
+                        ]}
+                      >
+                        {store.name}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.storeOptionAddress,
+                          isSelected ? styles.storeOptionAddressSelected : null,
+                        ]}
+                      >
+                        {store.address}
+                      </Text>
+                    </VStack>
+                  </Button>
+                );
+              })}
+            </VStack>
+          ) : (
+            <Text style={styles.storeEmptyText}>Nenhuma loja disponivel.</Text>
+          )}
+
+          {errors.storeId ? (
+            <Text style={styles.fieldError}>{errors.storeId}</Text>
           ) : null}
         </VStack>
+      ) : null}
 
-        <VStack style={styles.field}>
-          <Text style={styles.label}>Categoria</Text>
-          <Input style={styles.input}>
-            <InputField
-              autoCapitalize="words"
-              onChangeText={(value) => onFieldChange('category', value)}
-              placeholder="Categoria"
-              style={styles.inputField}
-              value={formValues.category}
-            />
-          </Input>
-          {errors.category ? (
-            <Text style={styles.fieldError}>{errors.category}</Text>
-          ) : null}
-        </VStack>
+      <FormTextInput
+        autoCapitalize="words"
+        errorMessage={errors.name}
+        label="Nome"
+        onChangeText={(value) => onFieldChange('name', value)}
+        placeholder="Nome do produto"
+        value={formValues.name}
+      />
 
-        <VStack style={styles.field}>
-          <Text style={styles.label}>Preco</Text>
-          <Input style={styles.input}>
-            <InputField
-              keyboardType="decimal-pad"
-              onChangeText={(value) => onFieldChange('price', value)}
-              placeholder="0,00"
-              style={styles.inputField}
-              value={formValues.price}
-            />
-          </Input>
-          {errors.price ? (
-            <Text style={styles.fieldError}>{errors.price}</Text>
-          ) : null}
-        </VStack>
+      <FormTextInput
+        autoCapitalize="words"
+        errorMessage={errors.category}
+        label="Categoria"
+        onChangeText={(value) => onFieldChange('category', value)}
+        placeholder="Categoria"
+        value={formValues.category}
+      />
 
-        <VStack style={styles.buttonGroup}>
-          <Button
-            isDisabled={isSubmitting || isSubmitDisabled}
-            onPress={() => void onSubmit()}
-            style={styles.primaryButton}
-          >
-            <ButtonText style={styles.primaryButtonText}>
-              {isSubmitting ? 'Salvando...' : submitLabel}
-            </ButtonText>
-          </Button>
+      <FormTextInput
+        errorMessage={errors.price}
+        keyboardType="decimal-pad"
+        label="Preco"
+        onChangeText={(value) => onFieldChange('price', value)}
+        placeholder="0,00"
+        value={formValues.price}
+      />
 
-          <Button
-            isDisabled={isSubmitting}
-            onPress={onCancel}
-            style={styles.secondaryButton}
-          >
-            <ButtonText style={styles.secondaryButtonText}>Cancelar</ButtonText>
-          </Button>
-        </VStack>
-      </VStack>
-    </Card>
+      <FormActions
+        isPrimaryDisabled={isSubmitting || isSubmitDisabled}
+        isSecondaryDisabled={isSubmitting}
+        onPrimaryPress={() => void onSubmit()}
+        onSecondaryPress={onCancel}
+        primaryLabel={isSubmitting ? 'Salvando...' : submitLabel}
+      />
+    </FormCard>
   );
 }

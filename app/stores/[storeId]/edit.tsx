@@ -1,17 +1,10 @@
-import {
-  Button,
-  ButtonText,
-  Card,
-  Spinner,
-  Text,
-  VStack,
-} from '@gluestack-ui/themed';
+import { VStack } from '@gluestack-ui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
+import { StateCard } from '../../../src/components/feedback/state-card';
 import { ScreenShell } from '../../../src/components/layout/screen-shell';
 import { resolveRouteParam } from '../../../src/lib/router/resolve-route-param';
-import { corporateTheme } from '../../../src/theme/corporate-theme';
 import { StoreForm } from '../../../src/features/stores/components/store-form';
 import { useStoreForm } from '../../../src/features/stores/hooks/use-store-form';
 import { newStoreScreenStyles as styles } from '../../../src/features/stores/new-store-screen.styles';
@@ -84,48 +77,33 @@ export default function EditStoreScreen() {
     <ScreenShell eyebrow="Lojas" title="Editar Loja">
       <VStack style={styles.content}>
         {isLoadingStore ? (
-          <Card style={styles.loadingCard}>
-            <VStack style={styles.loadingContent}>
-              <Spinner size="large" color={corporateTheme.colors.brand} />
-              <Text style={styles.loadingText}>Carregando loja...</Text>
-            </VStack>
-          </Card>
+          <StateCard
+            align="center"
+            layout="column"
+            message="Carregando loja..."
+            minHeight={96}
+            showSpinner
+            tone="surface"
+          />
         ) : null}
 
         {hasStoreLoadError ? (
-          <Card style={styles.emptyStateCard}>
-            <VStack style={styles.emptyStateContent}>
-              <Text style={styles.emptyStateText}>
-                {storesErrorMessage ?? 'Nao foi possivel carregar a loja.'}
-              </Text>
-
-              <Button
-                style={styles.primaryButton}
-                onPress={() => void loadStores({ force: true })}
-              >
-                <ButtonText style={styles.primaryButtonText}>
-                  Tentar novamente
-                </ButtonText>
-              </Button>
-            </VStack>
-          </Card>
+          <StateCard
+            actionLabel="Tentar novamente"
+            message={storesErrorMessage ?? 'Nao foi possivel carregar a loja.'}
+            onAction={() => void loadStores({ force: true })}
+            tone="soft"
+          />
         ) : null}
 
         {isStoreMissing ? (
-          <Card style={styles.emptyStateCard}>
-            <VStack style={styles.emptyStateContent}>
-              <Text style={styles.emptyStateText}>Loja nao encontrada.</Text>
-
-              <Button
-                style={styles.secondaryButton}
-                onPress={() => router.replace('/stores')}
-              >
-                <ButtonText style={styles.secondaryButtonText}>
-                  Voltar para lojas
-                </ButtonText>
-              </Button>
-            </VStack>
-          </Card>
+          <StateCard
+            actionLabel="Voltar para lojas"
+            actionVariant="secondary"
+            message="Loja nao encontrada."
+            onAction={() => router.replace('/stores')}
+            tone="soft"
+          />
         ) : null}
 
         {!isLoadingStore && !hasStoreLoadError && !isStoreMissing ? (

@@ -1,16 +1,9 @@
-import {
-  Button,
-  ButtonText,
-  Card,
-  Spinner,
-  Text,
-  VStack,
-} from '@gluestack-ui/themed';
+import { Text, VStack } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 
+import { StateCard } from '../../src/components/feedback/state-card';
 import { ScreenShell } from '../../src/components/layout/screen-shell';
-import { corporateTheme } from '../../src/theme/corporate-theme';
 import { useStoreZustand } from '../../src/features/stores/store/stores.store';
 import { ProductForm } from '../../src/features/products/components/product-form';
 import { useCreateProductForm } from '../../src/features/products/hooks/use-create-product-form';
@@ -85,54 +78,36 @@ export default function NewProductScreen() {
     <ScreenShell eyebrow="Produtos" title="Novo Produto">
       <VStack style={styles.content}>
         {isLoadingStores ? (
-          <Card style={styles.loadingCard}>
-            <VStack style={styles.loadingContent}>
-              <Spinner size="large" color={corporateTheme.colors.brand} />
-              <Text style={styles.loadingText}>Carregando lojas...</Text>
-            </VStack>
-          </Card>
+          <StateCard
+            align="center"
+            layout="column"
+            message="Carregando lojas..."
+            minHeight={96}
+            showSpinner
+            tone="surface"
+          />
         ) : null}
 
         {hasStoreLoadError ? (
-          <Card style={styles.emptyStateCard}>
-            <VStack style={styles.emptyStateContent}>
-              <Text style={styles.emptyStateText}>
-                Nao foi possivel carregar as lojas para vincular o produto.
-              </Text>
-
-              <Button
-                style={styles.primaryButton}
-                onPress={() => void loadStores({ force: true })}
-              >
-                <ButtonText style={styles.primaryButtonText}>
-                  Tentar novamente
-                </ButtonText>
-              </Button>
-
-              {storesErrorMessage ? (
-                <Text style={styles.formError}>{storesErrorMessage}</Text>
-              ) : null}
-            </VStack>
-          </Card>
+          <StateCard
+            actionLabel="Tentar novamente"
+            message="Nao foi possivel carregar as lojas para vincular o produto."
+            onAction={() => void loadStores({ force: true })}
+            tone="soft"
+          >
+            {storesErrorMessage ? (
+              <Text style={styles.formError}>{storesErrorMessage}</Text>
+            ) : null}
+          </StateCard>
         ) : null}
 
         {!isLoadingStores && !hasStoreLoadError && !hasStores ? (
-          <Card style={styles.emptyStateCard}>
-            <VStack style={styles.emptyStateContent}>
-              <Text style={styles.emptyStateText}>
-                Cadastre uma loja para vincular o produto antes de salvar.
-              </Text>
-
-              <Button
-                onPress={() => router.push('/stores/new')}
-                style={styles.primaryButton}
-              >
-                <ButtonText style={styles.primaryButtonText}>
-                  Cadastrar loja
-                </ButtonText>
-              </Button>
-            </VStack>
-          </Card>
+          <StateCard
+            actionLabel="Cadastrar loja"
+            message="Cadastre uma loja para vincular o produto antes de salvar."
+            onAction={() => router.push('/stores/new')}
+            tone="soft"
+          />
         ) : null}
 
         {!isLoadingStores && !hasStoreLoadError ? (

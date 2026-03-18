@@ -1,17 +1,10 @@
-import {
-  Button,
-  ButtonText,
-  Card,
-  Spinner,
-  Text,
-  VStack,
-} from '@gluestack-ui/themed';
+import { VStack } from '@gluestack-ui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
+import { StateCard } from '../../../../../src/components/feedback/state-card';
 import { ScreenShell } from '../../../../../src/components/layout/screen-shell';
 import { resolveRouteParam } from '../../../../../src/lib/router/resolve-route-param';
-import { corporateTheme } from '../../../../../src/theme/corporate-theme';
 import { ProductForm } from '../../../../../src/features/products/components/product-form';
 import { useCreateProductForm } from '../../../../../src/features/products/hooks/use-create-product-form';
 import { newProductScreenStyles as styles } from '../../../../../src/features/products/new-product-screen.styles';
@@ -108,52 +101,39 @@ export default function EditProductScreen() {
     <ScreenShell eyebrow="Produtos" title="Editar Produto">
       <VStack style={styles.content}>
         {isLoadingProduct ? (
-          <Card style={styles.loadingCard}>
-            <VStack style={styles.loadingContent}>
-              <Spinner size="large" color={corporateTheme.colors.brand} />
-              <Text style={styles.loadingText}>Carregando produto...</Text>
-            </VStack>
-          </Card>
+          <StateCard
+            align="center"
+            layout="column"
+            message="Carregando produto..."
+            minHeight={96}
+            showSpinner
+            tone="surface"
+          />
         ) : null}
 
         {hasProductLoadError ? (
-          <Card style={styles.emptyStateCard}>
-            <VStack style={styles.emptyStateContent}>
-              <Text style={styles.emptyStateText}>
-                {productErrorMessage ?? 'Nao foi possivel carregar o produto.'}
-              </Text>
-
-              <Button
-                style={styles.primaryButton}
-                onPress={() =>
-                  void loadProductsByStore(resolvedStoreId, { force: true })
-                }
-              >
-                <ButtonText style={styles.primaryButtonText}>
-                  Tentar novamente
-                </ButtonText>
-              </Button>
-            </VStack>
-          </Card>
+          <StateCard
+            actionLabel="Tentar novamente"
+            message={
+              productErrorMessage ?? 'Nao foi possivel carregar o produto.'
+            }
+            onAction={() =>
+              void loadProductsByStore(resolvedStoreId, { force: true })
+            }
+            tone="soft"
+          />
         ) : null}
 
         {isProductMissing ? (
-          <Card style={styles.emptyStateCard}>
-            <VStack style={styles.emptyStateContent}>
-              <Text style={styles.emptyStateText}>Produto nao encontrado.</Text>
-
-              <Button
-                style={styles.secondaryButton}
-                onPress={() =>
-                  router.replace(`/stores/${resolvedStoreId}/products`)
-                }
-              >
-                <ButtonText style={styles.secondaryButtonText}>
-                  Voltar para produtos
-                </ButtonText>
-              </Button>
-            </VStack>
-          </Card>
+          <StateCard
+            actionLabel="Voltar para produtos"
+            actionVariant="secondary"
+            message="Produto nao encontrado."
+            onAction={() =>
+              router.replace(`/stores/${resolvedStoreId}/products`)
+            }
+            tone="soft"
+          />
         ) : null}
 
         {!isLoadingProduct && !hasProductLoadError && !isProductMissing ? (
