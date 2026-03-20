@@ -1,9 +1,11 @@
 import { VStack } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Alert } from 'react-native';
 
+import { AppAlertDialog } from '../../src/components/feedback/app-alert-dialog';
 import { StateCard } from '../../src/components/feedback/state-card';
+import { useAppAlertDialog } from '../../src/components/feedback/use-app-alert-dialog';
+import { useAppToast } from '../../src/components/feedback/use-app-toast';
 import { ListHeader } from '../../src/components/layout/list-header';
 import { FloatingActionButton } from '../../src/components/actions/floating-action-button';
 import { ScreenShell } from '../../src/components/layout/screen-shell';
@@ -14,6 +16,8 @@ import { useStoreZustand } from '../../src/features/stores/store/stores.store';
 
 export default function StoresScreen() {
   const router = useRouter();
+  const { dialogProps, showConfirm } = useAppAlertDialog();
+  const { showError, showSuccess } = useAppToast();
   const deleteStore = useStoreZustand((state) => state.deleteStore);
   const errorMessage = useStoreZustand((state) => state.errorMessage);
   const loadStores = useStoreZustand((state) => state.loadStores);
@@ -40,39 +44,42 @@ export default function StoresScreen() {
   const isLoadingStores = status === 'idle' || status === 'loading';
   const hasStoreLoadError = status === 'error';
 
-  async function handleDeleteStore(storeId: string) {
+  async function handleDeleteStore(storeId: string, storeName: string) {
     try {
       setPendingStoreId(storeId);
 
       await deleteStore(storeId);
       removeProductsByStore(storeId);
+
+      showSuccess({
+        message: `A loja "${storeName}" foi excluida com sucesso.`,
+        title: 'Loja excluida',
+      });
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
           : 'Nao foi possivel excluir a loja.';
 
-      Alert.alert('Erro ao excluir', message);
+      showError({
+        message,
+        title: 'Erro ao excluir',
+      });
     } finally {
       setPendingStoreId(null);
     }
   }
 
   function confirmDeleteStore(storeId: string, storeName: string) {
-    Alert.alert(
-      'Excluir loja',
-      `Deseja excluir a loja "${storeName}"? Os produtos vinculados tambem sairao da lista.`,
-      [
-        { style: 'cancel', text: 'Cancelar' },
-        {
-          style: 'destructive',
-          text: 'Excluir',
-          onPress: () => {
-            void handleDeleteStore(storeId);
-          },
-        },
-      ],
-    );
+    showConfirm({
+      confirmLabel: 'Excluir',
+      message: `Deseja excluir a loja "${storeName}"? Os produtos vinculados tambem sairao da lista.`,
+      onConfirm: () => {
+        void handleDeleteStore(storeId, storeName);
+      },
+      title: 'Excluir loja',
+      tone: 'error',
+    });
   }
 
   return (
@@ -134,6 +141,8 @@ export default function StoresScreen() {
             ))}
           </VStack>
         ) : null}
+
+        <AppAlertDialog {...dialogProps} />
       </VStack>
     </ScreenShell>
   );

@@ -14,9 +14,4 @@ export const formCardStyles = StyleSheet.create({
   content: {
     gap: 18,
   },
-  errorText: {
-    color: corporateTheme.colors.error,
-    fontSize: 14,
-    lineHeight: 20,
-  },
 });

@@ -2,6 +2,7 @@ import { Text, VStack } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useAppToast } from '../../src/components/feedback/use-app-toast';
 import { StateCard } from '../../src/components/feedback/state-card';
 import { ScreenShell } from '../../src/components/layout/screen-shell';
 import { useStoreZustand } from '../../src/features/stores/store/stores.store';
@@ -12,6 +13,7 @@ import { useProductZustand } from '../../src/features/products/store/products.st
 
 export default function NewProductScreen() {
   const router = useRouter();
+  const { showError, showSuccess } = useAppToast();
   const createProduct = useProductZustand((state) => state.createProduct);
   const loadStores = useStoreZustand((state) => state.loadStores);
   const storeIds = useStoreZustand((state) => state.storeIds);
@@ -57,6 +59,11 @@ export default function NewProductScreen() {
       setIsSubmitting(true);
 
       await createProduct(payload);
+
+      showSuccess({
+        message: `O produto "${payload.name}" foi cadastrado com sucesso.`,
+        title: 'Produto criado',
+      });
       router.replace('/products');
     } catch (error) {
       const message =
@@ -64,6 +71,10 @@ export default function NewProductScreen() {
           ? error.message
           : 'Nao foi possivel salvar o produto.';
 
+      showError({
+        message,
+        title: 'Erro ao salvar',
+      });
       setFormError(message);
     } finally {
       setIsSubmitting(false);

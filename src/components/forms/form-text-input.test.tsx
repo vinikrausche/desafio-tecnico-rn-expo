@@ -39,4 +39,27 @@ describe('FormTextInput', () => {
 
     expect(onChangeText).toHaveBeenCalledWith('Tecnologia');
   });
+
+  it('renderiza textarea reutilizavel para campos longos', () => {
+    const onChangeText = jest.fn();
+
+    renderWithUi(
+      <FormTextInput
+        helperMessage="Inclua rua, numero e bairro."
+        label="Endereco"
+        multiline
+        onChangeText={onChangeText}
+        placeholder="Digite o endereco"
+        value=""
+      />,
+    );
+
+    fireEvent.changeText(
+      screen.getByPlaceholderText('Digite o endereco'),
+      'Rua Central, 500',
+    );
+
+    expect(screen.getByText('Inclua rua, numero e bairro.')).toBeTruthy();
+    expect(onChangeText).toHaveBeenCalledWith('Rua Central, 500');
+  });
 });
