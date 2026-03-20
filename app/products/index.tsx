@@ -1,9 +1,11 @@
 import { VStack } from '@gluestack-ui/themed';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Alert } from 'react-native';
 
+import { AppAlertDialog } from '../../src/components/feedback/app-alert-dialog';
 import { StateCard } from '../../src/components/feedback/state-card';
+import { useAppAlertDialog } from '../../src/components/feedback/use-app-alert-dialog';
+import { useAppToast } from '../../src/components/feedback/use-app-toast';
 import { ListHeader } from '../../src/components/layout/list-header';
 import { FloatingActionButton } from '../../src/components/actions/floating-action-button';
 import { ScreenShell } from '../../src/components/layout/screen-shell';
@@ -25,6 +27,8 @@ function attachStoreName(
 
 export default function ProductsCatalogScreen() {
   const router = useRouter();
+  const { dialogProps, showConfirm } = useAppAlertDialog();
+  const { showError, showSuccess } = useAppToast();
   const catalogErrorMessage = useProductZustand(
     (state) => state.catalogErrorMessage,
   );
@@ -58,17 +62,29 @@ export default function ProductsCatalogScreen() {
   const isLoadingCatalog =
     catalogStatus === 'idle' || catalogStatus === 'loading';
 
-  async function handleDeleteProduct(productId: string, storeId: string) {
+  async function handleDeleteProduct(
+    productId: string,
+    productName: string,
+    storeId: string,
+  ) {
     try {
       setPendingProductId(productId);
       await deleteProduct(productId, storeId);
+
+      showSuccess({
+        message: `O produto "${productName}" foi excluido com sucesso.`,
+        title: 'Produto excluido',
+      });
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
           : 'Nao foi possivel excluir o produto.';
 
-      Alert.alert('Erro ao excluir', message);
+      showError({
+        message,
+        title: 'Erro ao excluir',
+      });
     } finally {
       setPendingProductId(null);
     }
@@ -79,20 +95,15 @@ export default function ProductsCatalogScreen() {
     productName: string,
     storeId: string,
   ) {
-    Alert.alert(
-      'Excluir produto',
-      `Deseja excluir o produto "${productName}"?`,
-      [
-        { style: 'cancel', text: 'Cancelar' },
-        {
-          style: 'destructive',
-          text: 'Excluir',
-          onPress: () => {
-            void handleDeleteProduct(productId, storeId);
-          },
-        },
-      ],
-    );
+    showConfirm({
+      confirmLabel: 'Excluir',
+      message: `Deseja excluir o produto "${productName}"?`,
+      onConfirm: () => {
+        void handleDeleteProduct(productId, productName, storeId);
+      },
+      title: 'Excluir produto',
+      tone: 'error',
+    });
   }
 
   return (
@@ -171,6 +182,8 @@ export default function ProductsCatalogScreen() {
             ))}
           </VStack>
         ) : null}
+
+        <AppAlertDialog {...dialogProps} />
       </VStack>
     </ScreenShell>
   );

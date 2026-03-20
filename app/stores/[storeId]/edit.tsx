@@ -2,6 +2,7 @@ import { VStack } from '@gluestack-ui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
+import { useAppToast } from '../../../src/components/feedback/use-app-toast';
 import { StateCard } from '../../../src/components/feedback/state-card';
 import { ScreenShell } from '../../../src/components/layout/screen-shell';
 import { resolveRouteParam } from '../../../src/lib/router/resolve-route-param';
@@ -12,6 +13,7 @@ import { useStoreZustand } from '../../../src/features/stores/store/stores.store
 
 export default function EditStoreScreen() {
   const router = useRouter();
+  const { showError, showSuccess } = useAppToast();
   const { storeId } = useLocalSearchParams<{ storeId?: string | string[] }>();
   const resolvedStoreId = resolveRouteParam(storeId, 'unknown-store');
   const loadStores = useStoreZustand((state) => state.loadStores);
@@ -55,6 +57,11 @@ export default function EditStoreScreen() {
       setIsSubmitting(true);
 
       await updateStore(resolvedStoreId, payload);
+
+      showSuccess({
+        message: `A loja "${payload.name}" foi atualizada com sucesso.`,
+        title: 'Loja atualizada',
+      });
       router.replace('/stores');
     } catch (error) {
       const message =
@@ -62,6 +69,10 @@ export default function EditStoreScreen() {
           ? error.message
           : 'Nao foi possivel atualizar a loja.';
 
+      showError({
+        message,
+        title: 'Erro ao atualizar',
+      });
       setFormError(message);
     } finally {
       setIsSubmitting(false);

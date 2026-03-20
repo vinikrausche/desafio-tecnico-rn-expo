@@ -1,4 +1,5 @@
 import { gluestackUIConfig } from '@gluestack-ui/config';
+import { OverlayProvider } from '@gluestack-ui/overlay';
 import {
   Box,
   GluestackUIProvider,
@@ -90,8 +91,10 @@ export function AppProvider({ children }: PropsWithChildren) {
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
         <GluestackUIProvider config={gluestackUIConfig}>
-          {children}
-          <StatusBar style="light" />
+          <OverlayProvider>
+            {children}
+            <StatusBar style="light" />
+          </OverlayProvider>
         </GluestackUIProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

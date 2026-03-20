@@ -41,7 +41,10 @@ export function StoreForm({
       <FormTextInput
         autoCapitalize="words"
         errorMessage={errors.address}
+        helperMessage="Inclua rua, numero e um ponto de referencia curto."
         label="Endereco"
+        multiline
+        numberOfLines={4}
         onChangeText={(value) => onFieldChange('address', value)}
         placeholder="Endereco da loja"
         value={formValues.address}
