@@ -1,4 +1,7 @@
-import type { ShowAppToastOptions, ShowAppToastShortcutOptions } from './app-toast.types';
+import type {
+  ShowAppToastOptions,
+  ShowAppToastShortcutOptions,
+} from './app-toast.types';
 
 export type UseAppToastResult = {
   closeAll: () => void;

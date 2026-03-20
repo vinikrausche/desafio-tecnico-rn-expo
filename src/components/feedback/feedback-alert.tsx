@@ -10,10 +10,7 @@ import {
   VStack,
 } from '@gluestack-ui/themed';
 
-import type {
-  FeedbackAlertProps,
-  FeedbackAlertTone,
-} from '../../types/components/feedback/feedback-alert.types';
+import type { FeedbackAlertProps } from '../../types/components/feedback/feedback-alert.types';
 import { feedbackAlertStyles as styles } from './feedback-alert.styles';
 
 const toneMap = {

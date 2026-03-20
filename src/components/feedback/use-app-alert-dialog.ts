@@ -1,8 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
-import type {
-  AppAlertDialogProps,
-} from '../../types/components/feedback/app-alert-dialog.types';
+import type { AppAlertDialogProps } from '../../types/components/feedback/app-alert-dialog.types';
 import type {
   AlertDialogState,
   ShowAlertOptions,
@@ -22,9 +20,8 @@ const CLOSED_DIALOG_STATE: AlertDialogState = {
 
 export function useAppAlertDialog(): UseAppAlertDialogResult {
   const confirmActionRef = useRef<(() => void) | null>(null);
-  const [dialogState, setDialogState] = useState<AlertDialogState>(
-    CLOSED_DIALOG_STATE,
-  );
+  const [dialogState, setDialogState] =
+    useState<AlertDialogState>(CLOSED_DIALOG_STATE);
 
   const closeAlert = useCallback(() => {
     confirmActionRef.current = null;

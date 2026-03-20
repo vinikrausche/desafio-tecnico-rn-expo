@@ -10,7 +10,10 @@ import {
   VStack,
 } from '@gluestack-ui/themed';
 
-import type { AppToastProps, AppToastTone } from '../../types/components/feedback/app-toast.types';
+import type {
+  AppToastProps,
+  AppToastTone,
+} from '../../types/components/feedback/app-toast.types';
 import { corporateTheme } from '../../theme/corporate-theme';
 import { appToastStyles as styles } from './app-toast.styles';
 
@@ -54,12 +57,7 @@ const toneMap = {
   }
 >;
 
-export function AppToast({
-  id,
-  message,
-  title,
-  tone = 'info',
-}: AppToastProps) {
+export function AppToast({ id, message, title, tone = 'info' }: AppToastProps) {
   const toneStyles = toneMap[tone];
 
   return (
@@ -77,7 +75,9 @@ export function AppToast({
           </ToastTitle>
 
           {message ? (
-            <ToastDescription style={[styles.description, toneStyles.description]}>
+            <ToastDescription
+              style={[styles.description, toneStyles.description]}
+            >
               {message}
             </ToastDescription>
           ) : null}
